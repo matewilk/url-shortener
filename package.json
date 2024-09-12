@@ -4,11 +4,13 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "test": "turbo run test"
   },
-  "packageManager": "npm@10.0.0",
+  "packageManager": "npm@9.6.7",
   "devDependencies": {
-    "turbo": "^2.1.1"
+    "turbo": "^2.1.1",
+    "vitest": "^2.0.5"
   },
   "workspaces": [
     "apps/*"
