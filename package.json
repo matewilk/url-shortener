@@ -7,7 +7,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test"
   },
-  "packageManager": "npm@9.6.7",
+  "packageManager": "npm@10.8.3",
   "devDependencies": {
     "turbo": "^2.1.1",
     "vitest": "^2.0.5"
