@@ -8,13 +8,10 @@ info:
 components:
   schemas:
     Url:
-      type: object
-      properties:
-        url: 
-          type: string
-          description: The URL to shorten
-          format: uri
-          example: https://www.example.com
+      type: string
+      description: The URL to shorten
+      format: uri
+      example: https://www.example.com
     ShortUrl:
       type: object
       properties:

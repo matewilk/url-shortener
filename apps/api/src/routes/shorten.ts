@@ -23,7 +23,7 @@ router.post("/", (req: Request<{}, {}, ShortenPostRequest>, res: Response) => {
   try {
     const body = urlSchema.parse(req.body);
 
-    const { url }: { url: Url["url"] } = body;
+    const { url }: { url: Url } = body;
 
     const resp: ShortUrl = {
       shortUrl: url,

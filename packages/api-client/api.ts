@@ -141,14 +141,12 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Url: {
-            /**
-             * Format: uri
-             * @description The URL to shorten
-             * @example https://www.example.com
-             */
-            url?: string;
-        };
+        /**
+         * Format: uri
+         * @description The URL to shorten
+         * @example https://www.example.com
+         */
+        Url: string;
         ShortUrl: {
             /**
              * Format: uri
