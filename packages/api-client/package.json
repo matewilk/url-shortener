@@ -1,0 +1,29 @@
+{
+  "name": "@shortify/api-client",
+  "version": "1.0.0",
+  "description": "Url shortener API client",
+  "main": "index.ts",
+  "types": "api.ts",
+  "scripts": {
+    "build": "openapi-typescript openapi/spec.yml -o ./api.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./api.ts"
+    },
+    "./schema": {
+      "import": "./api.ts",
+      "types": "./api.ts"
+    },
+    "./client": {
+      "import": "./client.ts",
+      "types": "./client.ts"
+    }
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.4.0"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.12.0"
+  }
+}

@@ -1,0 +1,112 @@
+openapi: 3.0.3
+info:
+  title: Shortify API
+  description: API for shortening URLs
+  version: 1.0.0
+
+
+components:
+  schemas:
+    Url:
+      type: object
+      properties:
+        url: 
+          type: string
+          description: The URL to shorten
+          format: uri
+          example: https://www.example.com
+    ShortUrl:
+      type: object
+      properties:
+        shortUrl:
+          type: string
+          description: The shortened URL
+          format: uri
+          example: https://shortify.com/abc123
+      
+
+paths:
+  /shorten:
+    post:
+      summary: Shorten a URL
+      description: Shorten a long URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                "url":
+                  $ref: '#/components/schemas/Url'
+      
+      responses:
+        '200':
+          description: URL shortened successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - shortUrl
+                properties:
+                  shortUrl:
+                    $ref: '#/components/schemas/ShortUrl'
+        
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+                    example: Valid URL is required
+  
+  /{shortUrl}:
+    get:
+      summary: Redirect to the original URLs
+      description: Redirect to the original URL based on the short URL
+      parameters:
+        - name: shortUrl
+          in: path
+          required: true
+          description: Encoded short URL
+          schema:
+            type: string
+            example: abc123
+      responses:
+        '302':
+          description: Redirect to the original URL
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+                example: https://www.example.com
+        '404':
+          description: Short URL not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+                    example: Short URL not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message
+                    example: Internal server error
