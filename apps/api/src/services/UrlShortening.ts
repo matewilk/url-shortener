@@ -1,6 +1,6 @@
 import { DbServiceType } from "./Db";
 
-interface UrlShorteningServiceType {
+export interface UrlShorteningServiceType {
   shorten: (url: string) => Promise<string>;
   expand: (hash: string) => Promise<string>;
 }

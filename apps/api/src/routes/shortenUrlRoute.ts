@@ -2,8 +2,10 @@ import { Request, Response, Router } from "express";
 import { z } from "zod";
 
 import { components, paths } from "@shortify/api-client/schema";
-import UrlShorteningService from "../services/UrlShortening";
-import { dbService, DbServiceType } from "../services/Db";
+import UrlShorteningService, {
+  UrlShorteningServiceType,
+} from "../services/UrlShortening";
+import { dbService } from "../services/Db";
 
 const router = Router();
 
@@ -20,13 +22,9 @@ interface ShortenUrlRoute<UrlService> {
   (urlService: UrlService): (req: Request, res: Response) => void;
 }
 
-const shortenUrlRoute: ShortenUrlRoute<UrlShorteningService<DbServiceType>> = (
+export const shortenUrlRoute: ShortenUrlRoute<UrlShorteningServiceType> = (
   urlService
 ) => {
-  // cover 2 cases
-  // 1. invalid url - zod covers that - 400
-  // 2. invalid post body - for example attribute url is called shortUrl - 400
-
   // how do I extend Response<ShortUrl> ?
   return async (req: Request<{}, {}, ShortenPostRequest>, res: Response) => {
     try {
@@ -43,7 +41,7 @@ const shortenUrlRoute: ShortenUrlRoute<UrlShorteningService<DbServiceType>> = (
       res.json(resp);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        res.status(400).json(JSON.parse(error.message));
+        return res.status(400).json({ error: "Invalid URL" });
       }
 
       res.status(500).json({ error: "Internal server error" });

@@ -1,14 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import shortenUrlRouter from "./routes/shortenUrlRoute";
-import redirectToUrlRouter from "./routes/redirectToUrlRoute";
+import shortenUrlRoute from "./routes/shortenUrlRoute";
+import redirectToUrlRoute from "./routes/redirectToUrlRoute";
 
 const app = express();
 
 app.use(bodyParser.json());
 
-app.use("/shorten", shortenUrlRouter);
-app.use("/:shortUrl", redirectToUrlRouter);
+app.use("/shorten", shortenUrlRoute);
+app.use("/:shortUrl", redirectToUrlRoute);
 
 export default app;
