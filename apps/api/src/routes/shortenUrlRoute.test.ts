@@ -33,7 +33,7 @@ describe("shortenUrlRoute", () => {
     expect(res.json).toHaveBeenCalledWith({ error: "Invalid URL" });
   });
 
-  test.only("returns 400 on invalid post body", async () => {
+  test("returns 400 on invalid post body", async () => {
     const req = { body: { shortUrl: "https://example.com" } };
     const res = { status: vi.fn().mockReturnThis(), json: vi.fn() };
 
