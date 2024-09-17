@@ -30,7 +30,9 @@ describe("shortenUrlRoute", () => {
     await postRoute(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Invalid URL" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid input parameters",
+    });
   });
 
   test("returns 400 on invalid post body", async () => {
@@ -40,6 +42,8 @@ describe("shortenUrlRoute", () => {
     await postRoute(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Invalid URL" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid input parameters",
+    });
   });
 });

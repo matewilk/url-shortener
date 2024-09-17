@@ -6,8 +6,10 @@ import UrlShorteningService, {
   UrlShorteningServiceType,
 } from "../services/UrlShortening";
 import { dbService } from "../services/Db";
+import { ErrorHandler } from "../error";
 
 const router = Router();
+const errorHandler = new ErrorHandler();
 
 type ShortenPostRequest =
   paths["/shorten"]["post"]["requestBody"]["content"]["application/json"];
@@ -40,11 +42,7 @@ export const shortenUrlRoute: ShortenUrlRoute<UrlShorteningServiceType> = (
 
       res.json(resp);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid URL" });
-      }
-
-      res.status(500).json({ error: "Internal server error" });
+      errorHandler.handleError(error as Error, res);
     }
   };
 };
