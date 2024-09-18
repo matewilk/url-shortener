@@ -1,20 +1,28 @@
 import { test, describe, beforeAll, expect, vi } from "vitest";
 
 import { shortenUrlRoute } from "./shortenUrlRoute";
+import { ErrorHandler } from "../error";
 
-const fakeUrlShorteningService = {
+const mockUrlShorteningService = {
   shorten: vi.fn(),
   expand: async () => "_",
+};
+
+const mockLogger = {
+  error: vi.fn(),
+  log: vi.fn(),
+  info: vi.fn(),
 };
 
 describe("shortenUrlRoute", () => {
   let postRoute: any;
   beforeAll(() => {
-    postRoute = shortenUrlRoute(fakeUrlShorteningService);
+    const errorHandler = new ErrorHandler(mockLogger);
+    postRoute = shortenUrlRoute(mockUrlShorteningService, errorHandler);
   });
 
   test("returns a shortened url", async () => {
-    fakeUrlShorteningService.shorten.mockResolvedValue("shortUrl");
+    mockUrlShorteningService.shorten.mockResolvedValue("shortUrl");
     const req = { body: { url: "https://example.com" } };
     const res = { json: vi.fn() };
 
@@ -30,7 +38,9 @@ describe("shortenUrlRoute", () => {
     await postRoute(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Invalid URL" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid input parameters",
+    });
   });
 
   test("returns 400 on invalid post body", async () => {
@@ -40,6 +50,8 @@ describe("shortenUrlRoute", () => {
     await postRoute(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Invalid URL" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Invalid input parameters",
+    });
   });
 });

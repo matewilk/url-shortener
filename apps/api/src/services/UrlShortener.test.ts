@@ -1,6 +1,6 @@
 import { test, describe, expect } from "vitest";
 
-import UrlShorteningService from "./UrlShortening";
+import UrlShorteningService from "./UrlShortener";
 
 const fakeDbService = {
   create: async () => "shortened",

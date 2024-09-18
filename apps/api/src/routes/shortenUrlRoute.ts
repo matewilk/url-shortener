@@ -1,17 +1,10 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { z } from "zod";
 
-import { components, paths } from "@shortify/api-client/schema";
-import UrlShorteningService, {
-  UrlShorteningServiceType,
-} from "../services/UrlShortening";
-import { dbService } from "../services/Db";
+import { components } from "@shortify/api-client/schema";
+import { UrlShorteningServiceType } from "../services/UrlShortener";
+import { ErrorHandler } from "../error";
 
-const router = Router();
-
-type ShortenPostRequest =
-  paths["/shorten"]["post"]["requestBody"]["content"]["application/json"];
-type Url = components["schemas"]["Url"];
 type ShortUrl = components["schemas"]["ShortUrl"];
 
 const urlSchema = z.object({
@@ -19,18 +12,21 @@ const urlSchema = z.object({
 });
 
 interface ShortenUrlRoute<UrlService> {
-  (urlService: UrlService): (req: Request, res: Response) => void;
+  (urlService: UrlService, errorHandler: ErrorHandler): (
+    req: Request,
+    res: Response
+  ) => void;
 }
 
 export const shortenUrlRoute: ShortenUrlRoute<UrlShorteningServiceType> = (
-  urlService
+  urlService,
+  errorHandler
 ) => {
-  // how do I extend Response<ShortUrl> ?
-  return async (req: Request<{}, {}, ShortenPostRequest>, res: Response) => {
+  return async (req: Request, res: Response) => {
     try {
       const body = urlSchema.parse(req.body);
 
-      const { url }: { url: Url } = body;
+      const { url } = body;
 
       const shortUrl = await urlService.shorten(url);
 
@@ -40,15 +36,7 @@ export const shortenUrlRoute: ShortenUrlRoute<UrlShorteningServiceType> = (
 
       res.json(resp);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid URL" });
-      }
-
-      res.status(500).json({ error: "Internal server error" });
+      errorHandler.handleError(error as Error, res);
     }
   };
 };
-
-router.post("/", shortenUrlRoute(new UrlShorteningService(dbService)));
-
-export default router;

@@ -1,14 +1,12 @@
-import { DbServiceType } from "./Db";
+import { dbService, DbServiceType } from "./Db";
 
 export interface UrlShorteningServiceType {
   shorten: (url: string) => Promise<string>;
   expand: (hash: string) => Promise<string>;
 }
 
-class UrlShorteningService<DbService extends DbServiceType>
-  implements UrlShorteningServiceType
-{
-  constructor(private dbSerivce: DbService) {}
+class UrlShorteningService implements UrlShorteningServiceType {
+  constructor(private dbSerivce: DbServiceType = dbService) {}
 
   async shorten(url: string): Promise<string> {
     return await this.dbSerivce.create(url);
