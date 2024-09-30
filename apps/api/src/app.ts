@@ -1,13 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import UrlShorteningService from "./services/UrlShortener";
-import { dbService } from "./services/Db";
+import { dbService, InMemoryDb } from "./services/Db";
 
 import { shortenUrlRoute } from "./routes/shortenUrlRoute";
 import { redirectToUrlRoute } from "./routes/redirectToUrlRoute";
 import { ErrorHandler } from "./error";
 
-const urlShorteningService = new UrlShorteningService(dbService);
+const InMemDbService = new InMemoryDb();
+const urlShorteningService = new UrlShorteningService(InMemDbService);
 const errorHandler = new ErrorHandler();
 
 const app = express();
