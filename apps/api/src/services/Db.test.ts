@@ -1,6 +1,6 @@
-import { test, describe, expect, beforeAll } from "vitest";
+import { test, describe, expect, beforeAll, vi } from "vitest";
 
-import { dbService, InMemoryDb } from "./Db";
+import { dbService, InMemoryDb, InMemoryBase62Db } from "./Db";
 
 describe("DbService", () => {
   test("create", async () => {
@@ -28,5 +28,29 @@ describe("InMemoryDb", () => {
   test("get", async () => {
     const result = await db.get("SGVsbG8gV29ybGQ=");
     expect(result).toBe("Hello World");
+  });
+});
+
+import { Hash } from "./hash";
+
+const base62Mock: Hash = {
+  encode: vi.fn().mockReturnValue("hash"),
+  decode: vi.fn().mockReturnValue(0),
+};
+
+describe("InMemoryBase62Db", () => {
+  let db: InMemoryBase62Db;
+  beforeAll(() => {
+    db = new InMemoryBase62Db(base62Mock);
+  });
+
+  test("create", async () => {
+    const result = await db.create("http://example.com");
+    expect(result).toBe("hash");
+  });
+
+  test("get", async () => {
+    const result = await db.get("hash");
+    expect(result).toBe("http://example.com");
   });
 });

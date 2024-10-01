@@ -8,7 +8,7 @@ import { ErrorHandler } from "../error";
 type ShortUrl = paths["/{shortUrl}"]["get"]["parameters"]["path"];
 
 const shortUrlSchema = z.object({
-  shortUrl: z.string().min(3),
+  shortUrl: z.string().min(1),
 });
 
 interface RedirectToUrlRoute {
