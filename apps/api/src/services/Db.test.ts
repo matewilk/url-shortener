@@ -31,7 +31,7 @@ describe("InMemoryDb", () => {
   });
 });
 
-import { Hash } from "./hash";
+import { Hash } from "./Hash";
 
 const base62Mock: Hash = {
   encode: vi.fn().mockReturnValue("hash"),

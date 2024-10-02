@@ -26,7 +26,7 @@ export class InMemoryDb implements DbServiceType {
 }
 
 // ------ Base62 -------
-import { Base62, Hash } from "./hash";
+import { Base62, Hash } from "./Hash";
 
 interface DbRecord {
   id: number;
