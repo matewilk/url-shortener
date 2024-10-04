@@ -77,6 +77,15 @@ paths:
             type: string
             example: abc123
       responses:
+        '200':
+          description: Return short URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    $ref: '#/components/schemas/Url'
         '302':
           description: Redirect to the original URL
           headers:
