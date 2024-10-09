@@ -1,56 +1,35 @@
-import { test, describe, expect, beforeAll, vi } from "vitest";
+import { test, describe, expect, beforeAll } from "vitest";
+import fc from "fast-check";
 
-import { dbService, InMemoryDb, InMemoryBase62Db } from "./Db";
-
-describe("DbService", () => {
-  test("create", async () => {
-    const result = await dbService.create("url");
-    expect(result).toBe("url");
-  });
-
-  test("get", async () => {
-    const result = await dbService.get("hash");
-    expect(result).toBe("hash");
-  });
-});
+import { InMemoryDb, Db } from "./Db";
 
 describe("InMemoryDb", () => {
-  let db: InMemoryDb;
+  let db: Db;
   beforeAll(() => {
-    db = new InMemoryDb();
+    db = new InMemoryDb(["url"]);
   });
 
-  test("create", async () => {
-    const result = await db.create("Hello World");
-    expect(result).toBe("SGVsbG8gV29ybGQ=");
+  test("creates and finds records", async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.record({
+          url: fc.webUrl(),
+        }),
+        async (data) => {
+          const created = await db.url.create(data);
+          const found = await db.url.findUnique({ id: created.id });
+
+          expect(created).toStrictEqual(found);
+        }
+      )
+    );
   });
 
-  test("get", async () => {
-    const result = await db.get("SGVsbG8gV29ybGQ=");
-    expect(result).toBe("Hello World");
-  });
-});
+  test("manually creates and finds a record with minimal data", async () => {
+    const record = { url: "http://a.aa" };
+    const created = await db.url.create(record);
+    const found = await db.url.findUnique({ id: created.id });
 
-import { Hash } from "./Hash";
-
-const base62Mock: Hash = {
-  encode: vi.fn().mockReturnValue("hash"),
-  decode: vi.fn().mockReturnValue(0),
-};
-
-describe("InMemoryBase62Db", () => {
-  let db: InMemoryBase62Db;
-  beforeAll(() => {
-    db = new InMemoryBase62Db(base62Mock);
-  });
-
-  test("create", async () => {
-    const result = await db.create("http://example.com");
-    expect(result).toBe("hash");
-  });
-
-  test("get", async () => {
-    const result = await db.get("hash");
-    expect(result).toBe("http://example.com");
+    expect(created).toStrictEqual(found);
   });
 });

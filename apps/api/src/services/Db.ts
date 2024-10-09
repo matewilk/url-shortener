@@ -1,58 +1,44 @@
-export interface DbServiceType {
-  create: (url: string) => Promise<string>;
-  get: (hash: string) => Promise<string>;
+type RecordVals = string | number | boolean;
+
+type BaseRecord = { id: number };
+
+export type DbRecord = BaseRecord & Record<string, RecordVals>;
+
+interface Operations<T extends BaseRecord> {
+  create: (data: Omit<T, "id">) => Promise<T>;
+  findUnique: (data: Pick<T, "id">) => Promise<T | undefined>;
 }
 
-export const dbService: DbServiceType = {
-  create: async (url: string) => url,
-  get: async (hash: string) => hash,
-};
-
-// ------ InMemoryDb Base64 -------
-export class InMemoryDb implements DbServiceType {
-  store: Record<string, string> = {};
-
-  hash = (url: string) => Buffer.from(url).toString("base64");
-
-  create = async (url: string) => {
-    const hash = this.hash(url);
-    this.store[hash] = url;
-    return hash;
-  };
-
-  get = async (hash: string) => {
-    return this.store[hash] || "";
-  };
+export interface Db {
+  [entity: string]: Operations<DbRecord>;
 }
 
-// ------ Base62 -------
-import { Base62, Hash } from "./Hash";
-
-interface DbRecord {
-  id: number;
-  hash: string; // this could be union of base62map string (as const)
-  url: string;
+interface Store<T extends BaseRecord> {
+  [id: number]: T;
 }
 
-export class InMemoryBase62Db implements DbServiceType {
-  private base62: Hash;
-  store: Record<number, DbRecord> = {};
+class Repository<T extends BaseRecord> implements Operations<T> {
+  private store: Store<T> = {};
+  private nextId = 1;
 
-  constructor(base62: Hash = new Base62()) {
-    this.base62 = base62;
+  async create(data: Omit<T, "id">): Promise<T> {
+    const record = { ...data, id: this.nextId++ } as T;
+    this.store[record.id] = record;
+
+    return record;
   }
 
-  create = async (url: string) => {
-    const id = Object.keys(this.store).length;
-    const hash = this.base62.encode(id);
+  async findUnique(data: Pick<T, "id">): Promise<T | undefined> {
+    return this.store[data.id];
+  }
+}
 
-    this.store[id] = { id, hash, url };
+export class InMemoryDb implements Db {
+  [entity: string]: Operations<DbRecord>;
 
-    return hash;
-  };
-
-  get = async (hash: string) => {
-    const id = this.base62.decode(hash);
-    return this.store[id]?.url || "";
-  };
+  constructor(entities: string[]) {
+    entities.forEach((entity) => {
+      this[entity] = new Repository<DbRecord>();
+    });
+  }
 }

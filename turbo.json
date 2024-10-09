@@ -10,8 +10,10 @@
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "dependsOn": ["dev:db:start"]
     },
+    "dev:db:start": {},
     "test": {
       "dependsOn": ["^test"]
     },

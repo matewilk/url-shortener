@@ -89,6 +89,17 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description Return short URL */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            url?: components["schemas"]["Url"];
+                        };
+                    };
+                };
                 /** @description Redirect to the original URL */
                 302: {
                     headers: {
