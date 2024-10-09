@@ -16,9 +16,7 @@ describe("Base62", () => {
         const encoded = hash.encode(num);
         const decoded = hash.decode(encoded);
 
-        console.log({ num, encoded, decoded });
-
-        return num === decoded;
+        expect(decoded).toBe(num);
       })
     );
   });

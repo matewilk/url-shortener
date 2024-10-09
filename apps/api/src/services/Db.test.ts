@@ -19,7 +19,7 @@ describe("InMemoryDb", () => {
           const created = await db.url.create(data);
           const found = await db.url.findUnique({ id: created.id });
 
-          return expect(created).toStrictEqual(found);
+          expect(created).toStrictEqual(found);
         }
       )
     );
