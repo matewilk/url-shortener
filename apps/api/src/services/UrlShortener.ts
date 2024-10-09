@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Hash } from "./Hash";
+import { UrlRepository } from "../urls/UrlRepository";
 
 export interface UrlShorteningServiceType {
   shorten: (url: string) => Promise<string>;
@@ -7,13 +8,10 @@ export interface UrlShorteningServiceType {
 }
 
 class UrlShorteningService implements UrlShorteningServiceType {
-  constructor(private db: PrismaClient, private hash: Hash) {}
+  constructor(private repo: UrlRepository, private hash: Hash) {}
 
   async shorten(url: string): Promise<string> {
-    const [{ nextval: nextId } = { nextval: undefined }] = await this.db
-      .$queryRaw<
-      { nextval: bigint }[]
-    >`SELECT nextval(pg_get_serial_sequence('"Url"', 'id'))`;
+    const nextId = await this.repo.getNextId();
 
     if (!nextId) {
       throw new Error();
@@ -22,12 +20,10 @@ class UrlShorteningService implements UrlShorteningServiceType {
     const id = Number(nextId);
     const hash = this.hash.encode(id);
 
-    const urlRecord = await this.db.url.create({
-      data: {
-        id,
-        url,
-        hash,
-      },
+    const urlRecord = await this.repo.create({
+      id,
+      longUrl: url,
+      hash,
     });
 
     return urlRecord.hash;
@@ -35,13 +31,9 @@ class UrlShorteningService implements UrlShorteningServiceType {
 
   async expand(hash: string): Promise<string> {
     const id = this.hash.decode(hash);
-    const urlRecord = await this.db.url.findUnique({
-      where: {
-        id,
-      },
-    });
+    const urlRecord = await this.repo.findById(id);
 
-    return urlRecord?.url || "";
+    return urlRecord?.longUrl || "";
   }
 }
 
