@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "check:types": "tsc --noEmit",
-    "test": "vitest",
-    "e2e": "playwright test"
+    "unit:test": "vitest",
+    "e2e:test": "playwright test"
   },
   "dependencies": {
     "@shortify/api-client": "*",

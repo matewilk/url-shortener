@@ -14,11 +14,14 @@
       "dependsOn": ["dev:db:start"]
     },
     "dev:db:start": {},
-    "test": {
-      "dependsOn": ["^test"]
+    "unit:test": {
+      "dependsOn": ["^unit:test"]
     },
-    "e2e": {
-      "dependsOn": ["^e2e"]
+    "int:test": {
+      "dependsOn": ["^int:test"]
+    },
+    "e2e:test": {
+      "dependsOn": ["^e2e:test"]
     }
   }
 }

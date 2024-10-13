@@ -9,7 +9,7 @@ export interface UrlRepository {
 
 export type ShortenedUrl = {
   id: number;
-  longUrl: string;
+  url: string;
   hash: string;
   createdAt: Date;
 };

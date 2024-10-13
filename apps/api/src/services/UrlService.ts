@@ -1,13 +1,12 @@
-import { PrismaClient } from "@prisma/client";
 import { Hash } from "./Hash";
 import { UrlRepository } from "../urls/UrlRepository";
 
-export interface UrlShorteningServiceType {
+export interface UrlServiceType {
   shorten: (url: string) => Promise<string>;
   expand: (hash: string) => Promise<string>;
 }
 
-class UrlShorteningService implements UrlShorteningServiceType {
+class UrlService implements UrlServiceType {
   constructor(private repo: UrlRepository, private hash: Hash) {}
 
   async shorten(url: string): Promise<string> {
@@ -22,7 +21,7 @@ class UrlShorteningService implements UrlShorteningServiceType {
 
     const urlRecord = await this.repo.create({
       id,
-      longUrl: url,
+      url,
       hash,
     });
 
@@ -33,8 +32,8 @@ class UrlShorteningService implements UrlShorteningServiceType {
     const id = this.hash.decode(hash);
     const urlRecord = await this.repo.findById(id);
 
-    return urlRecord?.longUrl || "";
+    return urlRecord?.url || "";
   }
 }
 
-export default UrlShorteningService;
+export default UrlService;

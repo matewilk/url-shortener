@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import { components } from "@shortify/api-client/schema";
-import { UrlShorteningServiceType } from "../services/UrlShortener";
+import { UrlServiceType } from "../services/UrlService";
 import { ErrorHandler } from "../error";
 
 type ShortUrl = components["schemas"]["ShortUrl"];
@@ -18,7 +18,7 @@ interface ShortenUrlRoute<UrlService> {
   ) => void;
 }
 
-export const shortenUrlRoute: ShortenUrlRoute<UrlShorteningServiceType> = (
+export const shortenUrlRoute: ShortenUrlRoute<UrlServiceType> = (
   urlService,
   errorHandler
 ) => {

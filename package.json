@@ -5,7 +5,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "test": "turbo run test"
+    "unit:test": "turbo run unit:test",
+    "int:test": "turbo run int:test",
+    "e2e:test": "turbo run e2e:test"
   },
   "packageManager": "npm@10.8.3",
   "devDependencies": {

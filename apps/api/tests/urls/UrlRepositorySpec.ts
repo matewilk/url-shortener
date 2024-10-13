@@ -7,9 +7,9 @@ export namespace UrlRepositorySpec {
       // TODO: Use fast-check
       test("urls can be persisted and found", async () => {
         const draft: ShortenedUrl.Draft = {
-          hash: "123",
-          longUrl: "www.google.com",
-          id: 1,
+          hash: "1",
+          url: "www.google.com",
+          id: 1, // should I use getNextId()?
         };
 
         const created = await repo.create(draft);

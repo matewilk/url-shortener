@@ -1,16 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { Prisma, PrismaClient } from "@prisma/client";
 
-import UrlShorteningService from "./services/UrlShortener";
+import UrlService from "./services/UrlService";
+import { InMemoryUrlRepository } from "./urls/InMemoryUrlRepository";
 import { shortenUrlRoute } from "./routes/shortenUrlRoute";
 import { redirectToUrlRoute } from "./routes/redirectToUrlRoute";
 import { ErrorHandler } from "./error";
 import { Base62 } from "./services/Hash";
 
-const db = new PrismaClient();
 const hash = new Base62();
-const urlShorteningService = new UrlShorteningService(db, hash);
+const repository = new InMemoryUrlRepository();
+const urlShorteningService = new UrlService(repository, hash);
 const errorHandler = new ErrorHandler();
 
 const app = express();
