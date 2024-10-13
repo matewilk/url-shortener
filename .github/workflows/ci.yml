@@ -56,7 +56,8 @@ jobs:
           npx prisma migrate deploy --schema=./apps/api/prisma/schema.prisma
           npx prisma generate --schema=./apps/api/prisma/schema.prisma
 
+      - name: Copy .env.int.test file
+        run: cp apps/api/.env.test apps/api/.env
+
       - name: Integration Test
-        env:
-          DATABASE_URL: postgres://testuser:testpass@localhost:5432/testdb
         run: npm run int:test
