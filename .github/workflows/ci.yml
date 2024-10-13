@@ -57,7 +57,7 @@ jobs:
           npx prisma generate --schema=./apps/api/prisma/schema.prisma
 
       - name: Copy .env.int.test file
-        run: cp apps/api/.env.test apps/api/.env
+        run: cp apps/api/.env.int.test apps/api/.env
 
       - name: Integration Test
         run: npm run int:test
