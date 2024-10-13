@@ -52,7 +52,7 @@ jobs:
       - name: Run Migration
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
-        run: npx prisma migrate deploy
+        run: npx prisma migrate deploy --schema=./apps/api/prisma/schema.prisma
 
       - name: Integration Test
         run: npm run int:test
