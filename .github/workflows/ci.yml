@@ -52,7 +52,7 @@ jobs:
       - name: Run Migration and Generate Prisma Client
         run: |
           npm run int:db:migrate
-          npm run int:db:generate
+          npm run int:db:prisma:generate
 
       - name: Integration Test
         run: npm run int:test
