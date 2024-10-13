@@ -15,7 +15,6 @@ describe("UrlShorteningService", () => {
   test("shorten", async () => {
     const service = new UrlService(reopository, hash);
     const result = await service.shorten("https://example.com");
-    console.log(result);
     expect(result).toBe("1");
   });
 
