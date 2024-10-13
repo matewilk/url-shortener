@@ -9,6 +9,8 @@
     "start": "node ./dist/index.js",
     "unit:test": "vitest --exclude '**/*.int.test.ts'",
     "int:test": "npx dotenv -e .env.int.test -- vitest int",
+    "int:db:migrate": "npx dotenv -e .env.int.test -- prisma migrate deploy",
+    "int:db:prisma:generate": "npx dotenv -e .env.int.test -- prisma generate",
     "dev:db:start": "docker compose -f ../../infra/postgres-dev-compose.yml --env-file ./.env.int.test up -d",
     "dev:db:stop": "docker compose -f ../../infra/postgres-dev-compose.yml down",
     "check:types": "tsc --noEmit"
