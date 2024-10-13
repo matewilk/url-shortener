@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node ./dist/index.js",
     "unit:test": "vitest --exclude '**/*.int.test.ts'",
-    "int:test": "dotenv -e .env.int.test -- vitest int",
+    "int:test": "npx dotenv -e .env.int.test -- vitest int",
     "dev:db:start": "docker compose -f ../../infra/postgres-dev-compose.yml --env-file ../../infra/dev.env up -d",
     "dev:db:stop": "docker compose -f ../../infra/postgres-dev-compose.yml down",
     "check:types": "tsc --noEmit"
@@ -19,11 +19,11 @@
     "@prisma/client": "^5.20.0",
     "@shortify/api-client": "*",
     "body-parser": "^1.20.3",
-    "dotenv": "^16.4.5",
     "express": "^4.20.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "dotenv-cli": "^7.4.2",
     "prisma": "^5.20.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
