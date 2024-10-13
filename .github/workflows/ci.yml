@@ -53,9 +53,13 @@ jobs:
         run: cp apps/api/.env.int.test apps/api/.env
 
       - name: Run Migration and Generate Prisma Client
+        env:
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/testdb
         run: |
           npx prisma migrate deploy --schema=./apps/api/prisma/schema.prisma
           npx prisma generate --schema=./apps/api/prisma/schema.prisma
 
       - name: Integration Test
+        env:
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/testdb
         run: npm run int:test
