@@ -7,7 +7,9 @@
     "lint": "turbo run lint",
     "unit:test": "turbo run unit:test",
     "int:test": "turbo run int:test",
-    "e2e:test": "turbo run e2e:test"
+    "e2e:test": "turbo run e2e:test",
+    "int:db:migrate": "turbo run int:db:migrate",
+    "int:db:prisma:generate": "turbo run int:db:prisma:generate"
   },
   "packageManager": "npm@10.8.3",
   "devDependencies": {
