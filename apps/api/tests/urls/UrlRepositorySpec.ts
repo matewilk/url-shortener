@@ -1,22 +1,29 @@
 import { describe, test, expect } from "vitest";
-import { UrlRepository, ShortenedUrl } from "../../src/urls/UrlRepository";
+import fc from "fast-check";
+
+import { UrlRepository } from "../../src/urls/UrlRepository";
 
 export namespace UrlRepositorySpec {
   export const run = (repo: UrlRepository) => {
     describe("UrlRepository", () => {
-      // TODO: Use fast-check
       test("urls can be persisted and found", async () => {
-        const draft: ShortenedUrl.Draft = {
-          hash: "1",
-          url: "www.google.com",
-          id: 1, // should I use getNextId()?
-        };
+        let idCounter = 1;
 
-        const created = await repo.create(draft);
+        await fc.assert(
+          fc.asyncProperty(
+            fc.record({
+              url: fc.webUrl(),
+              hash: fc.string({ minLength: 1 }),
+            }),
+            async (draft) => {
+              const draftWithId = { ...draft, id: idCounter++ };
+              const created = await repo.create(draftWithId);
 
-        const found = await repo.findById(created.id);
-
-        expect(found).toEqual(created);
+              const found = await repo.findById(created.id);
+              expect(found).toEqual(created);
+            }
+          )
+        );
       });
     });
   };
