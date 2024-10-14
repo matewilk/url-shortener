@@ -17,6 +17,17 @@ jobs:
     #  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     #  TURBO_REMOTE_ONLY: true
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -35,5 +46,13 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm run test
+      - name: Unit Test
+        run: npm run unit:test
+
+      - name: Run Migration and Generate Prisma Client
+        run: |
+          npm run int:db:migrate
+          npm run int:db:prisma:generate
+
+      - name: Integration Test
+        run: npm run int:test

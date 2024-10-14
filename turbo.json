@@ -14,11 +14,20 @@
       "dependsOn": ["dev:db:start"]
     },
     "dev:db:start": {},
-    "test": {
-      "dependsOn": ["^test"]
+    "unit:test": {
+      "dependsOn": ["^unit:test"]
     },
-    "e2e": {
-      "dependsOn": ["^e2e"]
+    "int:test": {
+      "dependsOn": ["^int:test"]
+    },
+    "int:db:migrate": {
+      "dependsOn": ["^int:db:migrate"]
+    },
+    "int:db:prisma:generate": {
+      "dependsOn": ["^int:db:prisma:generate"]
+    },
+    "e2e:test": {
+      "dependsOn": ["^e2e:test"]
     }
   }
 }
