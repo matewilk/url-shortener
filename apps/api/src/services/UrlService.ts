@@ -6,7 +6,7 @@ export interface UrlServiceType {
   expand: (hash: string) => Promise<string>;
 }
 
-class UrlService implements UrlServiceType {
+export class UrlService implements UrlServiceType {
   constructor(private repo: UrlRepository, private hash: Hash) {}
 
   async shorten(url: string): Promise<string> {
@@ -35,5 +35,3 @@ class UrlService implements UrlServiceType {
     return urlRecord?.url || "";
   }
 }
-
-export default UrlService;
