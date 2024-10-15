@@ -1,4 +1,5 @@
 import { test, describe, expect, beforeAll } from "vitest";
+import fc from "fast-check";
 
 import UrlService from "./UrlService";
 
@@ -8,19 +9,20 @@ import { Hash, Base62 } from "./Hash";
 describe("UrlShorteningService", () => {
   let reopository: InMemoryUrlRepository;
   let hash: Hash;
+  let urlService: UrlService;
   beforeAll(() => {
     hash = new Base62();
     reopository = new InMemoryUrlRepository();
+    urlService = new UrlService(reopository, hash);
   });
-  test("shorten", async () => {
-    const service = new UrlService(reopository, hash);
-    const result = await service.shorten("https://example.com");
-    expect(result).toBe("1");
-  });
+  test("shorten and expand", async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.webUrl(), async (url) => {
+        const hash = await urlService.shorten(url);
+        const expandedUrl = await urlService.expand(hash);
 
-  test("expand", async () => {
-    const service = new UrlService(reopository, hash);
-    const result = await service.expand("1");
-    expect(result).toBe("https://example.com");
+        expect(expandedUrl).toBe(url);
+      })
+    );
   });
 });
