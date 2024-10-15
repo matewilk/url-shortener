@@ -1,7 +1,7 @@
 import { test, describe, expect, beforeAll } from "vitest";
 import fc from "fast-check";
 
-import UrlService from "./UrlService";
+import { UrlService } from "./UrlService";
 
 import { InMemoryUrlRepository } from "../urls/InMemoryUrlRepository";
 import { Hash, Base62 } from "./Hash";

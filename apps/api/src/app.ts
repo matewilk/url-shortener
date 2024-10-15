@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import UrlService from "./services/UrlService";
+import { UrlService } from "./services/UrlService";
 import { InMemoryUrlRepository } from "./urls/InMemoryUrlRepository";
 import { shortenUrlRoute } from "./routes/shortenUrlRoute";
 import { redirectToUrlRoute } from "./routes/redirectToUrlRoute";
