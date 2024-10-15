@@ -4,57 +4,60 @@ This project is a URL shortener application consisting of a frontend built with 
 
 ## Getting Started
 
-### Runing dev env
+### Running Development Environment
 
-1. Install dependencies:
+#### Install dependencies:
 
-   ```sh
-   npm install
-   ```
+```sh
+npm install
+```
 
-2. Start the dev env:
+#### Start the development environment:
 
-   ```sh
-   npm run dev
-   ```
+```sh
+npm run dev
+```
 
-3. Local endpoints:
+#### Local Endpoints:
 
-   1. Frontend: [http://localhost:3000](http://localhost:3000)
-   2. Backend: [http://localhost:3001](http://localhost:3001)
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend:** [http://localhost:3001](http://localhost:3001)
 
-4. Env variables:
+#### Environment Variables:
 
-   1. Backend:
-      1. dev - `apps/api/.env`
-      2. integraton tests - `apps/api/.env.int.test`
-   2. Infra:
-      1. dev - `infra/.env.dev`
-      2. integration tests - `infra/.env.int.test`
+- **Backend:**
+  - Development: `apps/api/.env`
+  - Integration tests: `apps/api/.env.int.test`
+- **Infrastructure:**
+  - Development: `infra/.env.dev`
+  - Integration tests: `infra/.env.int.test`
 
-5. Docker compose:
-   Is located in `infra/postgres-dev-compose.yml` and runs separate `devdb` and `testdb` databases.
+#### Docker Compose:
 
-6. Tests:
+- Located in `infra/postgres-dev-compose.yml`
+- Runs separate `devdb` and `testdb` databases.
 
-   1. Unit tests:
+#### Running Tests:
 
-   ```sh
-    npm run unit:test 
-   ```
+- **Unit Tests:**
 
-   2. Integration tests:
+  ```sh
+  npm run unit:test
+  ```
 
-   ```sh
-    npm run int:test
-   ```
+- **Integration Tests:**
 
-   Integration tests are run agains the `testdb` database.
+  ```sh
+  npm run int:test
+  ```
 
-7. CI/CD:
-   1. Github actions are used for CI/CD.
-   2. `ci.yml` builds and tests the project.
-   3. `playwright.yml` runs end-to-end tests using Playwright.
+  Integration tests are run against the `testdb` database.
+
+#### CI/CD:
+
+- GitHub Actions are used for CI/CD.
+- `ci.yml` builds and tests the project.
+- `playwright.yml` runs end-to-end tests using Playwright.
 
 ## Contributing
 
