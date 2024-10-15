@@ -2,36 +2,38 @@ import { Hash } from "./Hash";
 import { UrlRepository } from "../urls/UrlRepository";
 
 export interface UrlServiceType {
-  shorten: (url: string) => Promise<string>;
-  expand: (hash: string) => Promise<string>;
+  shorten: (url: string) => Promise<string | Error>;
+  expand: (hash: string) => Promise<string | Error>;
 }
 
 export class UrlService implements UrlServiceType {
   constructor(private repo: UrlRepository, private hash: Hash) {}
 
-  async shorten(url: string): Promise<string> {
-    const nextId = await this.repo.getNextId();
+  async shorten(url: string): Promise<string | Error> {
+    const nextIdResponse = await this.repo.getNextId();
 
-    if (!nextId) {
-      throw new Error();
+    if (nextIdResponse.kind === "error") {
+      return nextIdResponse.error;
     }
 
-    const id = Number(nextId);
+    const id = Number(nextIdResponse.value);
     const hash = this.hash.encode(id);
 
-    const urlRecord = await this.repo.create({
+    const response = await this.repo.create({
       id,
       url,
       hash,
     });
 
-    return urlRecord.hash;
+    return response.kind === "success" ? hash : response.error;
   }
 
-  async expand(hash: string): Promise<string> {
+  async expand(hash: string): Promise<string | Error> {
     const id = this.hash.decode(hash);
-    const urlRecord = await this.repo.findById(id);
+    const response = await this.repo.findById(id);
 
-    return urlRecord?.url || "";
+    return response.kind === "success"
+      ? response.value?.url || ""
+      : response.error;
   }
 }
