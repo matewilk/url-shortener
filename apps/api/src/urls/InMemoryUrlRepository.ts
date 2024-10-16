@@ -27,9 +27,12 @@ export class InMemoryUrlRepository implements UrlRepository {
     }
   };
 
-  findById = (id: number): Promise<Result<ShortenedUrl | undefined, Error>> => {
+  findById = (id: number): Promise<Result<ShortenedUrl | null, Error>> => {
     try {
-      return Promise.resolve({ kind: "success", value: this.store[id] });
+      return Promise.resolve({
+        kind: "success",
+        value: this.store[id] ?? null,
+      });
     } catch (error) {
       return Promise.reject({ kind: "error", error });
     }

@@ -1,8 +1,7 @@
 export interface UrlRepository {
-  // TODO: Think about unhappy paths
   create: (url: ShortenedUrl.Draft) => Promise<Result<ShortenedUrl, Error>>;
 
-  findById: (id: number) => Promise<Result<ShortenedUrl | undefined, Error>>;
+  findById: (id: number) => Promise<Result<ShortenedUrl | null, Error>>;
 
   getNextId: () => Promise<Result<number, Error>>;
 }

@@ -23,7 +23,7 @@ export class RdbmsUrlRepository implements UrlRepository {
 
   findById = async (
     id: number
-  ): Promise<Result<ShortenedUrl | undefined, Error>> => {
+  ): Promise<Result<ShortenedUrl | null, Error>> => {
     try {
       const record = await this.db.url.findUnique({
         where: {
@@ -31,7 +31,7 @@ export class RdbmsUrlRepository implements UrlRepository {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record || undefined });
+      return Promise.resolve({ kind: "success", value: record });
     } catch (error) {
       return Promise.reject({ kind: "error", error });
     }
