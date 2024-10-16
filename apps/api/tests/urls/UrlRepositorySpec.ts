@@ -6,7 +6,7 @@ import { UrlRepository } from "../../src/urls/UrlRepository";
 export namespace UrlRepositorySpec {
   export const run = (repo: UrlRepository) => {
     describe("UrlRepository", () => {
-      test("urls can be persisted and found", async () => {
+      test("urls can be created and found", async () => {
         let idCounter = 1;
 
         await fc.assert(
