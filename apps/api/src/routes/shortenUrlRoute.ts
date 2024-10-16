@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 
-import { components } from "@shortify/api-client/schema";
 import { UrlServiceType } from "../services/UrlService";
 import { ErrorHandler } from "../error";
-
-type ShortUrl = components["schemas"]["ShortUrl"];
 
 const urlSchema = z.object({
   url: z.string().url(),
@@ -28,13 +25,13 @@ export const shortenUrlRoute: ShortenUrlRoute<UrlServiceType> = (
 
       const { url } = body;
 
-      const shortUrl = await urlService.shorten(url);
+      const result = await urlService.shorten(url);
 
-      const resp: ShortUrl = {
-        shortUrl,
-      };
+      if (result instanceof Error) {
+        errorHandler.handleError(result, res);
+      }
 
-      res.json(resp);
+      res.json({ shortUrl: result });
     } catch (error) {
       errorHandler.handleError(error as Error, res);
     }

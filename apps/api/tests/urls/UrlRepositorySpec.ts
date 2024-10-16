@@ -19,12 +19,18 @@ export namespace UrlRepositorySpec {
               const draftWithId = { ...draft, id: idCounter++ };
               const created = await repo.create(draftWithId);
 
-              const found = await repo.findById(created.id);
+              if (created.kind === "error") {
+                throw created.error;
+              }
+
+              const found = await repo.findById(created.value.id);
               expect(found).toEqual(created);
             }
           )
         );
       });
+
+      // TODO: Add test to handle unhappy paths
     });
   };
 }

@@ -28,9 +28,13 @@ export const redirectToUrlRoute: RedirectToUrlRoute = (
 
       const { shortUrl }: ShortUrl = params;
 
-      const url = await urlService.expand(shortUrl);
+      const response = await urlService.expand(shortUrl);
 
-      res.json({ url });
+      if (response instanceof Error) {
+        errorHandler.handleError(response, res);
+      }
+
+      res.json({ url: response });
     } catch (error) {
       errorHandler.handleError(error as Error, res);
     }
