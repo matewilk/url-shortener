@@ -4,11 +4,19 @@ import { z } from "zod";
 import { UserServiceType } from "../service/UserService";
 import { ErrorHandler } from "../../error";
 
+export interface UserRoutes {
+  createUser: UserRoute;
+  findUserById: UserRoute;
+  findUserByEmail: UserRoute;
+  updateUser: UserRoute;
+  deleteUser: UserRoute;
+}
+
 interface UserRoute {
   (userService: UserServiceType, errorHandler: ErrorHandler): (
     req: Request,
     res: Response
-  ) => void;
+  ) => Promise<Response>;
 }
 
 const createUserSchema = z.object({
@@ -27,7 +35,7 @@ export const createUser: UserRoute = (userService, errorHandler) => {
         return errorHandler.handleError(response, res);
       }
 
-      res.json({ user: response });
+      return res.json({ user: response });
     } catch (error) {
       return errorHandler.handleError(error as Error, res);
     }
@@ -49,7 +57,7 @@ export const findUserById: UserRoute = (userService, errorHandler) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json({ user: response });
+      return res.json({ user: response });
     } catch (error) {
       return errorHandler.handleError(error as Error, res);
     }
@@ -71,7 +79,7 @@ export const findUserByEmail: UserRoute = (userService, errorHandler) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json({ user: response });
+      return res.json({ user: response });
     } catch (error) {
       return errorHandler.handleError(error as Error, res);
     }
@@ -99,7 +107,7 @@ export const updateUser: UserRoute = (userService, errorHandler) => {
         return errorHandler.handleError(response, res);
       }
 
-      res.json({ user: response });
+      return res.json({ user: response });
     } catch (error) {
       return errorHandler.handleError(error as Error, res);
     }
@@ -121,7 +129,7 @@ export const deleteUser: UserRoute = (userService, errorHandler) => {
         return errorHandler.handleError(response, res);
       }
 
-      res.json({ user: response });
+      return res.json({ user: response });
     } catch (error) {
       return errorHandler.handleError(error as Error, res);
     }
