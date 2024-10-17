@@ -1,6 +1,6 @@
 "use client";
 import { useFormState } from "react-dom";
-import { formSubmitAction } from "../actions/formAction";
+import { formSubmitAction } from "@/app/actions/formAction";
 
 const initialState = {
   message: "",

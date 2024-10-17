@@ -1,7 +1,7 @@
 import { beforeEach, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 
-import { RdbmsUrlRepository } from "../../src/urls/RdbmsUrlRepository";
+import { RdbmsUrlRepository } from "../../src/urls/repository/RdbmsUrlRepository";
 import { UrlRepositorySpec } from "./UrlRepositorySpec";
 
 const prisma = new PrismaClient();

@@ -1,12 +1,12 @@
 import { describe, test, expect } from "vitest";
 import fc from "fast-check";
 
-import { UrlRepository } from "../../src/urls/UrlRepository";
+import { UrlRepository } from "../../src/urls/repository/UrlRepository";
 
 export namespace UrlRepositorySpec {
   export const run = (repo: UrlRepository) => {
     describe("UrlRepository", () => {
-      test("urls can be persisted and found", async () => {
+      test("urls can be created and found", async () => {
         let idCounter = 1;
 
         await fc.assert(
