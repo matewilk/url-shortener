@@ -1,7 +1,7 @@
 import { beforeEach, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 
-import { DbUserRepository } from "../../src/users/DbUserRepository";
+import { DbUserRepository } from "../../src/users/repository/DbUserRepository";
 import { UserRepositorySpec } from "./UserRepositorySpec";
 
 const prisma = new PrismaClient();

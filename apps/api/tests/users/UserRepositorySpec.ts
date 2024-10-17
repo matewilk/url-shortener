@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import fc from "fast-check";
 
-import { UserRepositopr } from "../../src/users/UserRepository";
+import { UserRepositopr } from "../../src/users/repository/UserRepository";
 
 export namespace UserRepositorySpec {
   export const run = (repo: UserRepositopr) => {
