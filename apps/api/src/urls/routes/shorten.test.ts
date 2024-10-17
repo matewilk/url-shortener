@@ -1,7 +1,7 @@
 import { test, describe, beforeAll, expect, vi } from "vitest";
 
-import { shortenUrlRoute } from "./shortenUrlRoute";
-import { ErrorHandler } from "../error";
+import { shorten } from "./shorten";
+import { ErrorHandler } from "../../error";
 
 const mockUrlShorteningService = {
   shorten: vi.fn(),
@@ -18,7 +18,7 @@ describe("shortenUrlRoute", () => {
   let postRoute: any;
   beforeAll(() => {
     const errorHandler = new ErrorHandler(mockLogger);
-    postRoute = shortenUrlRoute(mockUrlShorteningService, errorHandler);
+    postRoute = shorten(mockUrlShorteningService, errorHandler);
   });
 
   test("returns a shortened url", async () => {

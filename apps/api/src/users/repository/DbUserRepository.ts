@@ -49,11 +49,12 @@ export class DbUserRepository implements UserRepositopr {
 
   async update(user: User.Update): Promise<Result<User, Error>> {
     try {
+      const { id, ...data } = user;
       const record = await this.db.user.update({
         where: {
-          id: user.id,
+          id,
         },
-        data: user,
+        data,
       });
 
       return Promise.resolve({ kind: "success", value: record });

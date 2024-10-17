@@ -1,5 +1,5 @@
 import { Hash } from "./Hash";
-import { UrlRepository } from "../urls/UrlRepository";
+import { UrlRepository } from "../repository/UrlRepository";
 
 export interface UrlServiceType {
   shorten: (url: string) => Promise<string | Error>;

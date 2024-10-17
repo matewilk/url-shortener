@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import { paths } from "@shortify/api-client/schema";
-import { UrlServiceType } from "../services/UrlService";
-import { ErrorHandler } from "../error";
+import { UrlServiceType } from "../service/UrlService";
+import { ErrorHandler } from "../../error";
 
 type ShortUrl = paths["/{shortUrl}"]["get"]["parameters"]["path"];
 
@@ -11,17 +11,14 @@ const shortUrlSchema = z.object({
   shortUrl: z.string().min(1),
 });
 
-interface RedirectToUrlRoute {
+interface ExpandUrl {
   (urlService: UrlServiceType, errorHandler: ErrorHandler): (
     req: Request,
     res: Response
   ) => void;
 }
 
-export const redirectToUrlRoute: RedirectToUrlRoute = (
-  urlService,
-  errorHandler
-) => {
+export const expand: ExpandUrl = (urlService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
       const params = shortUrlSchema.parse(req.params);

@@ -1,24 +1,21 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 
-import { UrlServiceType } from "../services/UrlService";
-import { ErrorHandler } from "../error";
+import { UrlServiceType } from "../service/UrlService";
+import { ErrorHandler } from "../../error";
 
 const urlSchema = z.object({
   url: z.string().url(),
 });
 
-interface ShortenUrlRoute<UrlService> {
-  (urlService: UrlService, errorHandler: ErrorHandler): (
+interface ShortenUrl {
+  (urlService: UrlServiceType, errorHandler: ErrorHandler): (
     req: Request,
     res: Response
   ) => void;
 }
 
-export const shortenUrlRoute: ShortenUrlRoute<UrlServiceType> = (
-  urlService,
-  errorHandler
-) => {
+export const shorten: ShortenUrl = (urlService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
       const body = urlSchema.parse(req.body);
