@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { Result, User, UserRepositopr } from "./UserRepository";
 import { DbError } from "../../error";
 
