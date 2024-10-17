@@ -43,6 +43,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Log Node.js, TypeScript, and Prisma versions
+        run: |
+          node -v
+          npm list typescript
+          npm list @prisma/client
+
       - name: Build
         run: npm run build
 
