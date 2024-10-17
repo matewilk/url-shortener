@@ -31,13 +31,18 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 app.post("/shorten", shorten(urlService, errorHandler));
 app.get("/:shortUrl", expand(urlService, errorHandler));
 
 app.post("/users", createUser(userService, errorHandler));
-app.get("/users/:id", findUserById(userService, errorHandler));
-app.get("/users/:email", findUserByEmail(userService, errorHandler));
-app.put("/users/:id", updateUser(userService, errorHandler));
-app.delete("/users/:id", deleteUser(userService, errorHandler));
+app.get("/users/id/:id", findUserById(userService, errorHandler));
+app.get("/users/email/:email", findUserByEmail(userService, errorHandler));
+app.put("/users/id/:id", updateUser(userService, errorHandler));
+app.delete("/users/id/:id", deleteUser(userService, errorHandler));
 
 export default app;

@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client/extension";
+import { Prisma } from "@prisma/client";
 import { Result, User, UserRepositopr } from "./UserRepository";
+import { DbError } from "../../error";
 
 export class DbUserRepository implements UserRepositopr {
   constructor(private readonly db: PrismaClient) {}
@@ -73,6 +75,15 @@ export class DbUserRepository implements UserRepositopr {
 
       return Promise.resolve({ kind: "success", value: record });
     } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          // TODO: handle this more gracefully
+          return Promise.resolve({
+            kind: "error",
+            error: new DbError(`User with ID ${id} not found.`, 404),
+          });
+        }
+      }
       return Promise.reject({ kind: "error", error });
     }
   }

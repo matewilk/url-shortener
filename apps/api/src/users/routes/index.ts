@@ -24,18 +24,18 @@ export const createUser: UserRoute = (userService, errorHandler) => {
       const response = await userService.createUser(email, password);
 
       if (response instanceof Error) {
-        errorHandler.handleError(response, res);
+        return errorHandler.handleError(response, res);
       }
 
       res.json({ user: response });
     } catch (error) {
-      errorHandler.handleError(error as Error, res);
+      return errorHandler.handleError(error as Error, res);
     }
   };
 };
 
 const findByIdSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
 });
 
 export const findUserById: UserRoute = (userService, errorHandler) => {
@@ -46,12 +46,12 @@ export const findUserById: UserRoute = (userService, errorHandler) => {
       const response = await userService.findUserById(Number(id));
 
       if (response === null) {
-        errorHandler.handleError(new Error("User not found"), res);
+        return res.status(404).json({ message: "User not found" });
       }
 
       res.json({ user: response });
     } catch (error) {
-      errorHandler.handleError(error as Error, res);
+      return errorHandler.handleError(error as Error, res);
     }
   };
 };
@@ -68,18 +68,21 @@ export const findUserByEmail: UserRoute = (userService, errorHandler) => {
       const response = await userService.findUserByEmail(email);
 
       if (response === null) {
-        errorHandler.handleError(new Error("User not found"), res);
+        return res.status(404).json({ message: "User not found" });
       }
 
       res.json({ user: response });
     } catch (error) {
-      errorHandler.handleError(error as Error, res);
+      return errorHandler.handleError(error as Error, res);
     }
   };
 };
 
-const updateUserSchema = z.object({
-  id: z.number(),
+const updateUserParamsSchema = z.object({
+  id: z.coerce.number(),
+});
+
+const updateUserBodySchema = z.object({
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
 });
@@ -87,23 +90,24 @@ const updateUserSchema = z.object({
 export const updateUser: UserRoute = (userService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
-      const { id, email, password } = updateUserSchema.parse(req.body);
+      const { id } = updateUserParamsSchema.parse(req.params);
+      const { email, password } = updateUserBodySchema.parse(req.body);
 
       const response = await userService.updateUser(id, email, password);
 
       if (response instanceof Error) {
-        errorHandler.handleError(response, res);
+        return errorHandler.handleError(response, res);
       }
 
       res.json({ user: response });
     } catch (error) {
-      errorHandler.handleError(error as Error, res);
+      return errorHandler.handleError(error as Error, res);
     }
   };
 };
 
 const deleteUserSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
 });
 
 export const deleteUser: UserRoute = (userService, errorHandler) => {
@@ -114,12 +118,12 @@ export const deleteUser: UserRoute = (userService, errorHandler) => {
       const response = await userService.deleteUser(id);
 
       if (response instanceof Error) {
-        errorHandler.handleError(response, res);
+        return errorHandler.handleError(response, res);
       }
 
       res.json({ user: response });
     } catch (error) {
-      errorHandler.handleError(error as Error, res);
+      return errorHandler.handleError(error as Error, res);
     }
   };
 };
