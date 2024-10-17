@@ -3,7 +3,7 @@ import fc from "fast-check";
 
 import { UrlService } from "./UrlService";
 
-import { InMemoryUrlRepository } from "../urls/InMemoryUrlRepository";
+import { InMemoryUrlRepository } from "../repository/InMemoryUrlRepository";
 import { Hash, Base62 } from "./Hash";
 
 describe("UrlShorteningService", () => {
@@ -18,8 +18,14 @@ describe("UrlShorteningService", () => {
   test("shorten and expand", async () => {
     await fc.assert(
       fc.asyncProperty(fc.webUrl(), async (url) => {
-        const hash = await urlService.shorten(url);
-        const expandedUrl = await urlService.expand(hash);
+        const response = await urlService.shorten(url);
+
+        // TODO: should the service return result object with kind and value?
+        if (response instanceof Error) {
+          throw response;
+        }
+
+        const expandedUrl = await urlService.expand(response);
 
         expect(expandedUrl).toBe(url);
       })
