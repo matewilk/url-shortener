@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client/extension";
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Result, User, UserRepositopr } from "./UserRepository";
 import { DbError } from "../../error";
 
