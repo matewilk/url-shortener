@@ -24,15 +24,14 @@ export class UserService implements UserServiceType {
       return new Error("User already exists");
     }
 
-    // TODO: same as above redefine the return type
     const hashResponse = await this.auth.hashPassword(password);
-    if (hashResponse instanceof Error) {
-      return hashResponse;
+    if (hashResponse.kind === "error") {
+      return hashResponse.error;
     }
 
     const response = await this.repo.create({
       email,
-      password: hashResponse.hashedPassword,
+      password: hashResponse.value,
     });
 
     return response.kind === "success" ? response.value : response.error;
@@ -44,6 +43,7 @@ export class UserService implements UserServiceType {
     return response.kind === "success" ? response.value : null;
   }
 
+  // TODO: this should return a Result<User | null, Error> ?
   async findUserByEmail(email: string): Promise<User | null> {
     const response = await this.repo.findByEmail(email);
 
