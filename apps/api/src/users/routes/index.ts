@@ -21,7 +21,7 @@ export const createUser: UserRoute = (userService, errorHandler) => {
     try {
       const { email, password } = createUserSchema.parse(req.body);
 
-      const response = await userService.createUser(email, password);
+      const response = await userService.registerUser(email, password);
 
       if (response instanceof Error) {
         return errorHandler.handleError(response, res);

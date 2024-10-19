@@ -17,6 +17,7 @@ import {
 } from "./users/routes";
 import { DbUserRepository } from "./users/repository/DbUserRepository";
 import { UserService } from "./users/service/UserService";
+import { AuthService } from "./auth/service/AuthService";
 
 const errorHandler = new ErrorHandler();
 const hash = new Base62();
@@ -24,17 +25,13 @@ const prisma = new PrismaClient();
 const urlRepository = new RdbmsUrlRepository(prisma);
 const urlService = new UrlService(urlRepository, hash);
 
-const UserRepositopr = new DbUserRepository(prisma);
-const userService = new UserService(UserRepositopr);
+const userRepositopr = new DbUserRepository(prisma);
+const authService = new AuthService();
+const userService = new UserService(userRepositopr, authService);
 
 const app = express();
 
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
 
 app.post("/shorten", shorten(urlService, errorHandler));
 app.get("/:shortUrl", expand(urlService, errorHandler));
