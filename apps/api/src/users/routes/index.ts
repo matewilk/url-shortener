@@ -4,6 +4,7 @@ import { z } from "zod";
 import { UserServiceType } from "../service/UserService";
 import { ErrorHandler } from "../../error";
 
+// TODO: should services be injected into the routes or other way around?
 interface UserRoute {
   (userService: UserServiceType, errorHandler: ErrorHandler): (
     req: Request,

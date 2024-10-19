@@ -17,7 +17,7 @@ import {
 } from "./users/routes";
 import { DbUserRepository } from "./users/repository/DbUserRepository";
 import { UserService } from "./users/service/UserService";
-import { AuthService } from "./auth/service/AuthService";
+import { JwtAuthService } from "./auth/service/AuthService";
 
 const errorHandler = new ErrorHandler();
 const hash = new Base62();
@@ -26,7 +26,7 @@ const urlRepository = new RdbmsUrlRepository(prisma);
 const urlService = new UrlService(urlRepository, hash);
 
 const userRepositopr = new DbUserRepository(prisma);
-const authService = new AuthService();
+const authService = new JwtAuthService();
 const userService = new UserService(userRepositopr, authService);
 
 const app = express();

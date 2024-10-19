@@ -1,19 +1,24 @@
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export interface AuthServiceType {
+export interface AuthService {
   hashPassword: (password: string) => Promise<Result<string, Error>>;
-  generateAuthToken: (
-    username: string,
+  verifyPassword: (
     password: string,
-    dbPassword: string,
+    dbPassword: string
+  ) => Promise<Result<boolean, Error>>;
+  generateAuthToken: (
+    payload: Record<string, unknown>,
+
     expiresIn?: string
   ) => Promise<Result<string, Error>>;
   validateAuthToken: (
     token: string
-  ) => Promise<Result<JwtPayload | string, Error>>;
+    // TODO: ok to use Record<string, unknown> here?
+  ) => Promise<Result<Record<string, unknown> | string, Error>>;
 }
 
+// TODO: move somweher common?
 type Result<T, E> = Ok<T> | Err<E>;
 
 type Ok<T> = {
@@ -26,7 +31,7 @@ type Err<E> = {
   error: E;
 };
 
-export class AuthService implements AuthServiceType {
+export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<Result<string, Error>> {
     try {
       const saltRounds = 10;
@@ -37,19 +42,24 @@ export class AuthService implements AuthServiceType {
     }
   }
 
-  async generateAuthToken(
-    username: string,
+  async verifyPassword(
     password: string,
-    dbPassword: string,
+    dbPassword: string
+  ): Promise<Result<boolean, Error>> {
+    try {
+      const match = await bcrypt.compare(password, dbPassword);
+      return { kind: "success", value: match };
+    } catch (error) {
+      return { kind: "error", error: new Error("Error verifying password") };
+    }
+  }
+
+  async generateAuthToken(
+    payload: JwtPayload,
     expiresIn?: string
   ): Promise<Result<string, Error>> {
     try {
-      const match = await bcrypt.compare(password, dbPassword);
-      if (!match) {
-        return { kind: "error", error: new Error("Invalid password") };
-      }
-
-      const token = jwt.sign({ username }, process.env.JWT_SECRET as string, {
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
       });
 

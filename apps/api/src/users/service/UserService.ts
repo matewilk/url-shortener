@@ -1,4 +1,4 @@
-import { AuthServiceType } from "../../auth/service/AuthService";
+import { AuthService } from "../../auth/service/AuthService";
 import { User, UserRepositopr } from "../repository/UserRepository";
 
 export interface UserServiceType {
@@ -14,7 +14,7 @@ export interface UserServiceType {
 }
 
 export class UserService implements UserServiceType {
-  constructor(private repo: UserRepositopr, public auth: AuthServiceType) {}
+  constructor(private repo: UserRepositopr, public auth: AuthService) {}
 
   async registerUser(email: string, password: string): Promise<User | Error> {
     const userExists = await this.repo.findByEmail(email);
