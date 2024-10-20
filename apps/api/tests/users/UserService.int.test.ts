@@ -7,6 +7,7 @@ import { DbUserRepository } from "../../src/users/repository/DbUserRepository";
 import { JwtAuthService } from "../../src/auth/service/AuthService";
 
 const prisma = new PrismaClient();
+console.log("DB_URL", process.env.DATABASE_URL);
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;

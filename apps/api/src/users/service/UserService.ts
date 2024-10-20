@@ -20,7 +20,7 @@ export class UserService implements UserServiceType {
     const userExists = await this.repo.findByEmail(email);
 
     // TODO: user repo interface does not clearly define the return type
-    if (userExists.kind === "success" && userExists.value === null) {
+    if (userExists.kind === "success" && userExists.value !== null) {
       return new Error("User already exists");
     }
 

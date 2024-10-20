@@ -6,7 +6,7 @@ import { UserServiceType } from "../../src/users/service/UserService";
 export namespace UserServiceSpec {
   export const run = (userService: UserServiceType) => {
     describe("UserService", () => {
-      test.skip("users can be created, found, updated and deleted", async () => {
+      test("users can be created, found, updated and deleted", async () => {
         await fc.assert(
           fc.asyncProperty(
             fc.uniqueArray(
@@ -55,7 +55,8 @@ export namespace UserServiceSpec {
               }
             }
           ),
-          { numRuns: 1 }
+          // TODO: is there a better way to limit test iterations number?
+          { interruptAfterTimeLimit: 1500 }
         );
       });
     });
