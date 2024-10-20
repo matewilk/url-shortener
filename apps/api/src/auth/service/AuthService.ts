@@ -9,7 +9,6 @@ export interface AuthService {
   ) => Promise<Result<boolean, Error>>;
   generateAuthToken: (
     payload: Record<string, unknown>,
-
     expiresIn?: string
   ) => Promise<Result<string, Error>>;
   validateAuthToken: (

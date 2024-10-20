@@ -13,6 +13,7 @@ interface UserRoute {
 }
 
 const createUserSchema = z.object({
+  name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -20,9 +21,13 @@ const createUserSchema = z.object({
 export const createUser: UserRoute = (userService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
-      const { email, password } = createUserSchema.parse(req.body);
+      const { name, email, password } = createUserSchema.parse(req.body);
 
-      const response = await userService.registerUser(email, password);
+      const response = await userService.registerUser({
+        name,
+        email,
+        password,
+      });
 
       if (response instanceof Error) {
         return errorHandler.handleError(response, res);
@@ -84,6 +89,7 @@ const updateUserParamsSchema = z.object({
 });
 
 const updateUserBodySchema = z.object({
+  name: z.string().min(3).optional(),
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
 });
@@ -92,9 +98,14 @@ export const updateUser: UserRoute = (userService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
       const { id } = updateUserParamsSchema.parse(req.params);
-      const { email, password } = updateUserBodySchema.parse(req.body);
+      const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-      const response = await userService.updateUser(id, email, password);
+      const response = await userService.updateUser({
+        id,
+        name,
+        email,
+        password,
+      });
 
       if (response instanceof Error) {
         return errorHandler.handleError(response, res);
