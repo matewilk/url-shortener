@@ -11,6 +11,8 @@ export namespace UserRepositorySpec {
 
         await fc.assert(
           fc.asyncProperty(
+            // TODO: this test passes even though fc generates same email
+            // probably because the user is deleted before the next one is created
             fc.record({
               name: fc.string(),
               email: fc.emailAddress(),
