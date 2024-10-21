@@ -34,8 +34,11 @@ export namespace AuthServiceSpec {
                 typeof validateResponse.value === "object" &&
                 "username" in validateResponse.value
               ) {
-                const { username } = validateResponse.value;
-                expect({ username }).toEqual(payload);
+                const authorised = await auth.authorise(
+                  tokenResponse.value.token,
+                  payload
+                );
+                expect(authorised).toEqual(true);
               }
             }
           )

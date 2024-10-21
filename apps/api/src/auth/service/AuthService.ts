@@ -15,6 +15,10 @@ export interface AuthService {
     token: string
     // TODO: ok to use Record<string, unknown> here?
   ) => Promise<Result<Record<string, unknown> | string, Error>>;
+  authorise: (
+    token: string,
+    payload: Token.Payload
+  ) => Promise<Result<boolean, Error>>;
 }
 
 // TODO: move somweher common?
@@ -31,9 +35,11 @@ type Err<E> = {
 };
 
 export namespace Token {
+  // TODO: this doesn't feel right to be here - too specific for a common module
   export type Payload = {
     name: string;
   };
+  // TODO: what about simply token: string for e.g. validateAuthToken?
   export type Draft = { token: string };
 }
 
@@ -84,5 +90,27 @@ export class JwtAuthService implements AuthService {
     } catch (error) {
       return { kind: "error", error: new Error("Invalid token") };
     }
+  }
+
+  async authorise(
+    token: string,
+    payload: Token.Payload
+  ): Promise<Result<boolean, Error>> {
+    const response = await this.validateAuthToken(token);
+
+    if (response.kind === "error") {
+      return response;
+    }
+
+    // TODO: ??
+    if (
+      typeof response.value === "object" &&
+      "name" in response.value &&
+      response.value.name === payload.name
+    ) {
+      return { kind: "success", value: true };
+    }
+
+    return { kind: "success", value: false };
   }
 }
