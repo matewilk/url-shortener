@@ -10,7 +10,7 @@ export namespace AuthServiceSpec {
         await fc.assert(
           fc.asyncProperty(
             fc.record({
-              username: fc
+              name: fc
                 .string({ minLength: 1, maxLength: 25 })
                 .filter((s) => !s.includes(" ")),
             }),
@@ -22,7 +22,7 @@ export namespace AuthServiceSpec {
               }
 
               const validateResponse = await auth.validateAuthToken(
-                tokenResponse.value
+                tokenResponse.value.token
               );
 
               if (validateResponse.kind === "error") {

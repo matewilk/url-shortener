@@ -18,12 +18,12 @@ const createUserSchema = z.object({
   password: z.string().min(8),
 });
 
-export const createUser: UserRoute = (userService, errorHandler) => {
+export const registerUser: UserRoute = (userService, errorHandler) => {
   return async (req: Request, res: Response) => {
     try {
       const { name, email, password } = createUserSchema.parse(req.body);
 
-      const response = await userService.registerUser({
+      const response = await userService.register({
         name,
         email,
         password,
@@ -49,7 +49,7 @@ export const findUserById: UserRoute = (userService, errorHandler) => {
     try {
       const { id } = findByIdSchema.parse(req.params);
 
-      const response = await userService.findUserById(Number(id));
+      const response = await userService.findById(Number(id));
 
       if (response === null) {
         return res.status(404).json({ message: "User not found" });
@@ -71,7 +71,7 @@ export const findUserByEmail: UserRoute = (userService, errorHandler) => {
     try {
       const { email } = findByEmailSchema.parse(req.params);
 
-      const response = await userService.findUserByEmail(email);
+      const response = await userService.findByEmail(email);
 
       if (response === null) {
         return res.status(404).json({ message: "User not found" });
@@ -100,7 +100,7 @@ export const updateUser: UserRoute = (userService, errorHandler) => {
       const { id } = updateUserParamsSchema.parse(req.params);
       const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-      const response = await userService.updateUser({
+      const response = await userService.update({
         id,
         name,
         email,
@@ -127,7 +127,7 @@ export const deleteUser: UserRoute = (userService, errorHandler) => {
     try {
       const { id } = deleteUserSchema.parse(req.params);
 
-      const response = await userService.deleteUser(id);
+      const response = await userService.delete(id);
 
       if (response instanceof Error) {
         return errorHandler.handleError(response, res);

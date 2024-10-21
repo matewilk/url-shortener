@@ -7,7 +7,7 @@ export namespace UserServiceSpec {
   export const run = (userService: UserServiceType) => {
     describe("UserService", () => {
       // TODO: this clashes with UserRepository test, skipping for now
-      test.skip("users can be created, found, updated and deleted", async () => {
+      test.skip("users can be created, logged in, found, updated and deleted", async () => {
         await fc.assert(
           fc.asyncProperty(
             fc.uniqueArray(
@@ -30,16 +30,23 @@ export namespace UserServiceSpec {
             ),
             async (newUsers) => {
               for (const newUser of newUsers) {
-                const created = await userService.registerUser(newUser);
+                const created = await userService.register(newUser);
 
                 if (created instanceof Error) {
                   throw created;
                 }
 
-                const found = await userService.findUserById(created.id);
+                const loginResponse = await userService.login(
+                  newUser.email,
+                  newUser.password
+                );
+                // TODO: makes sense to decode the token and check the payload?
+                expect(loginResponse).not.toBeInstanceOf(Error);
+
+                const found = await userService.findById(created.id);
                 expect(found).toEqual(created);
 
-                const updated = await userService.updateUser({
+                const updated = await userService.update({
                   id: created.id,
                   name: "updated name",
                 });
@@ -48,10 +55,10 @@ export namespace UserServiceSpec {
                   throw updated;
                 }
 
-                const foundUpdated = await userService.findUserById(created.id);
+                const foundUpdated = await userService.findById(created.id);
                 expect(foundUpdated).toEqual(updated);
 
-                const deleted = await userService.deleteUser(created.id);
+                const deleted = await userService.delete(created.id);
                 expect(deleted).toEqual(updated);
               }
             }

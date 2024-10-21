@@ -8,9 +8,9 @@ export interface AuthService {
     dbPassword: string
   ) => Promise<Result<boolean, Error>>;
   generateAuthToken: (
-    payload: Record<string, unknown>,
+    payload: Token.Payload,
     expiresIn?: string
-  ) => Promise<Result<string, Error>>;
+  ) => Promise<Result<Token.Draft, Error>>;
   validateAuthToken: (
     token: string
     // TODO: ok to use Record<string, unknown> here?
@@ -29,6 +29,13 @@ type Err<E> = {
   kind: "error";
   error: E;
 };
+
+export namespace Token {
+  export type Payload = {
+    name: string;
+  };
+  export type Draft = { token: string };
+}
 
 export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<Result<string, Error>> {
@@ -54,15 +61,15 @@ export class JwtAuthService implements AuthService {
   }
 
   async generateAuthToken(
-    payload: JwtPayload,
+    payload: Token.Payload,
     expiresIn?: string
-  ): Promise<Result<string, Error>> {
+  ): Promise<Result<{ token: string }, Error>> {
     try {
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
       });
 
-      return { kind: "success", value: token };
+      return { kind: "success", value: { token } };
     } catch (error) {
       return { kind: "error", error: new Error("Error creating token") };
     }

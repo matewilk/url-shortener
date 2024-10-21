@@ -9,7 +9,7 @@ import { expand } from "./urls/routes/expand";
 import { Base62 } from "./urls/service/Hash";
 import { RdbmsUrlRepository } from "./urls/repository/RdbmsUrlRepository";
 import {
-  createUser,
+  registerUser,
   deleteUser,
   findUserByEmail,
   findUserById,
@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 app.post("/shorten", shorten(urlService, errorHandler));
 app.get("/:shortUrl", expand(urlService, errorHandler));
 
-app.post("/users", createUser(userService, errorHandler));
+app.post("/users", registerUser(userService, errorHandler));
 app.get("/users/id/:id", findUserById(userService, errorHandler));
 app.get("/users/email/:email", findUserByEmail(userService, errorHandler));
 app.put("/users/id/:id", updateUser(userService, errorHandler));
