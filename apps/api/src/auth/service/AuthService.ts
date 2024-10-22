@@ -8,13 +8,17 @@ export interface AuthService {
     dbPassword: string
   ) => Promise<Result<boolean, Error>>;
   generateAuthToken: (
-    payload: Record<string, unknown>,
+    payload: Token.Payload,
     expiresIn?: string
-  ) => Promise<Result<string, Error>>;
+  ) => Promise<Result<Token.Draft, Error>>;
   validateAuthToken: (
     token: string
     // TODO: ok to use Record<string, unknown> here?
   ) => Promise<Result<Record<string, unknown> | string, Error>>;
+  authorise: (
+    token: string,
+    payload: Token.Payload
+  ) => Promise<Result<boolean, Error>>;
 }
 
 // TODO: move somweher common?
@@ -29,6 +33,15 @@ type Err<E> = {
   kind: "error";
   error: E;
 };
+
+export namespace Token {
+  // TODO: this doesn't feel right to be here - too specific for a common module
+  export type Payload = {
+    name: string;
+  };
+  // TODO: what about simply token: string for e.g. validateAuthToken?
+  export type Draft = { token: string };
+}
 
 export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<Result<string, Error>> {
@@ -54,15 +67,15 @@ export class JwtAuthService implements AuthService {
   }
 
   async generateAuthToken(
-    payload: JwtPayload,
+    payload: Token.Payload,
     expiresIn?: string
-  ): Promise<Result<string, Error>> {
+  ): Promise<Result<{ token: string }, Error>> {
     try {
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
       });
 
-      return { kind: "success", value: token };
+      return { kind: "success", value: { token } };
     } catch (error) {
       return { kind: "error", error: new Error("Error creating token") };
     }
@@ -77,5 +90,27 @@ export class JwtAuthService implements AuthService {
     } catch (error) {
       return { kind: "error", error: new Error("Invalid token") };
     }
+  }
+
+  async authorise(
+    token: string,
+    payload: Token.Payload
+  ): Promise<Result<boolean, Error>> {
+    const response = await this.validateAuthToken(token);
+
+    if (response.kind === "error") {
+      return response;
+    }
+
+    // TODO: ??
+    if (
+      typeof response.value === "object" &&
+      "name" in response.value &&
+      response.value.name === payload.name
+    ) {
+      return { kind: "success", value: true };
+    }
+
+    return { kind: "success", value: false };
   }
 }
