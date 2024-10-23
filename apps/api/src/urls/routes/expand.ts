@@ -11,6 +11,7 @@ const shortUrlSchema = z.object({
   shortUrl: z.string().min(1),
 });
 
+// TODO: should services be injected into the routes or other way around?
 interface ExpandUrl {
   (urlService: UrlServiceType, errorHandler: ErrorHandler): (
     req: Request,
