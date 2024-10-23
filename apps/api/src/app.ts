@@ -19,6 +19,8 @@ import { DbUserRepository } from "./users/repository/DbUserRepository";
 import { UserService } from "./users/service/UserService";
 import { JwtAuthService } from "./auth/service/AuthService";
 
+import { withAuth } from "./Routes";
+
 const errorHandler = new ErrorHandler();
 const hash = new Base62();
 const prisma = new PrismaClient();
@@ -36,7 +38,7 @@ app.use(bodyParser.json());
 app.post("/shorten", shorten(urlService, errorHandler));
 app.get("/:shortUrl", expand(urlService, errorHandler));
 
-app.post("/users", registerUser(userService, errorHandler));
+app.post("/users", withAuth(registerUser, { userService, errorHandler }));
 app.get("/users/id/:id", findUserById(userService, errorHandler));
 app.get("/users/email/:email", findUserByEmail(userService, errorHandler));
 app.put("/users/id/:id", updateUser(userService, errorHandler));
