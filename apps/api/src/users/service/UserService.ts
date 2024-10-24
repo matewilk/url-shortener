@@ -2,7 +2,7 @@ import { AuthService, Token } from "../../auth/service/AuthService";
 import { User, UserRepositopr } from "../repository/UserRepository";
 
 export interface UserServiceType {
-  register: (user: User.Draft) => Promise<User | Error>;
+  register: (user: User.Draft) => Promise<User.Return | Error>;
   login: (email: string, password: string) => Promise<Token.Draft | Error>;
   findById: (id: number) => Promise<User | null>;
   findByEmail: (email: string) => Promise<User | null>;
@@ -13,7 +13,11 @@ export interface UserServiceType {
 export class UserService implements UserServiceType {
   constructor(private repo: UserRepositopr, public auth: AuthService) {}
 
-  async register({ name, email, password }: User.Draft): Promise<User | Error> {
+  async register({
+    name,
+    email,
+    password,
+  }: User.Draft): Promise<User.Return | Error> {
     const userExists = await this.repo.findByEmail(email);
 
     // TODO: user repo interface does not clearly define the return type

@@ -1,11 +1,12 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+
 import { Result, User, UserRepositopr } from "./UserRepository";
 import { DbError } from "../../error";
 
 export class DbUserRepository implements UserRepositopr {
   constructor(private readonly db: PrismaClient) {}
 
-  async create(user: User.Draft): Promise<Result<User, Error>> {
+  async create(user: User.Draft): Promise<Result<User.Return, Error>> {
     try {
       const record = await this.db.user.create({
         data: {
@@ -14,6 +15,7 @@ export class DbUserRepository implements UserRepositopr {
         },
       });
 
+      // TODO: why typescript is not shouting about too many fields in the returned record?
       return Promise.resolve({ kind: "success", value: record });
     } catch (error) {
       return Promise.reject({ kind: "error", error });
