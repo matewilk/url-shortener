@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 app.post("/shorten", shorten(urlService, errorHandler));
 app.get("/:shortUrl", expand(urlService, errorHandler));
 
-app.post("/users", withAuth(registerUser, { userService, errorHandler }));
+app.post("/users", withServices(registerUser, { userService, errorHandler }));
 app.get("/users/id/:id", withAuth(findUserById, { userService, errorHandler }));
 app.get(
   "/users/email/:email",

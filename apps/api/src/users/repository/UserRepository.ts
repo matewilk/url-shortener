@@ -1,5 +1,5 @@
 export interface UserRepositopr {
-  create: (user: User.Draft) => Promise<Result<User, Error>>;
+  create: (user: User.Draft) => Promise<Result<User.Return, Error>>;
 
   findById: (id: number) => Promise<Result<User | null, Error>>;
 
@@ -32,4 +32,5 @@ export type User = {
 export namespace User {
   export type Draft = Omit<User, "id">;
   export type Update = { id: number } & Partial<Draft>;
+  export type Return = Omit<User, "email" | "password">;
 }
