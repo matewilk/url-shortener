@@ -10,11 +10,19 @@ type UserRouteServices = {
   errorHandler: ErrorHandler;
 };
 
-const registerUserSchema = z.object({
-  name: z.string().min(3),
-  email: z.string().email(),
-  password: z.string().min(8),
+const idSchema = z.coerce.number();
+const nameSchema = z.string().min(3);
+const emailSchema = z.string().email();
+const passwordSchema = z.string().min(8);
+
+const baseUserSchema = z.object({
+  id: idSchema,
+  name: nameSchema,
+  email: emailSchema,
+  password: passwordSchema,
 });
+
+const registerUserSchema = baseUserSchema.omit({ id: true });
 
 export const registerUser: Route<UserRouteServices> = async (
   req,
@@ -40,14 +48,7 @@ export const registerUser: Route<UserRouteServices> = async (
   }
 };
 
-const findByIdSchema = z.object({
-  id: z.coerce.number(),
-});
-
-const loginUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
+const loginUserSchema = baseUserSchema.pick({ email: true, password: true });
 
 export const loginUser: Route<UserRouteServices> = async (
   req: Request,
@@ -69,6 +70,8 @@ export const loginUser: Route<UserRouteServices> = async (
   }
 };
 
+const findByIdSchema = baseUserSchema.pick({ id: true });
+
 export const findUserById: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
@@ -89,9 +92,7 @@ export const findUserById: Route<UserRouteServices> = async (
   }
 };
 
-const findByEmailSchema = z.object({
-  email: z.string().email(),
-});
+const findByEmailSchema = baseUserSchema.pick({ email: true });
 
 export const findUserByEmail: Route<UserRouteServices> = async (
   req: Request,
@@ -113,15 +114,8 @@ export const findUserByEmail: Route<UserRouteServices> = async (
   }
 };
 
-const updateUserParamsSchema = z.object({
-  id: z.coerce.number(),
-});
-
-const updateUserBodySchema = z.object({
-  name: z.string().min(3).optional(),
-  email: z.string().email().optional(),
-  password: z.string().min(8).optional(),
-});
+const updateUserParamsSchema = baseUserSchema.pick({ id: true });
+const updateUserBodySchema = baseUserSchema.omit({ id: true }).partial();
 
 export const updateUser: Route<UserRouteServices> = async (
   req: Request,
@@ -149,9 +143,7 @@ export const updateUser: Route<UserRouteServices> = async (
   }
 };
 
-const deleteUserSchema = z.object({
-  id: z.coerce.number(),
-});
+const deleteUserSchema = baseUserSchema.pick({ id: true });
 
 export const deleteUser: Route<UserRouteServices> = async (
   req: Request,
