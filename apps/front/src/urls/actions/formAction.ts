@@ -4,7 +4,7 @@ import { z } from "zod";
 import { client } from "@shortify/api-client/client";
 const apiClient = client("http://localhost:3001");
 
-export const formSubmitAction = async (
+export const submitUrlAction = async (
   prevState: unknown,
   formData: FormData
 ) => {
