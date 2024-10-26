@@ -3,6 +3,7 @@ import { useFormState } from "react-dom";
 
 import { submitUrlAction, Init } from "@/urls/actions/formAction";
 import { UrlBox } from "./UrlBox";
+import { ErrorMessage } from "./Error";
 
 const initialState: Init = {
   kind: "init",
@@ -34,7 +35,7 @@ export const SubmitUrlForm = () => {
           </button>
         </div>
         {state.kind === "success" && (
-          // TODO: get host from env
+          // TODO: get host from env?
           <UrlBox host={window.location.host} url={state.value.message} />
         )}
         {state.kind === "error" && (
@@ -44,9 +45,3 @@ export const SubmitUrlForm = () => {
     </form>
   );
 };
-
-const ErrorMessage = ({ message }: { message: string }) => (
-  <div className="text-red-500 text-xl w-full flex justify-start px-4">
-    {message}
-  </div>
-);
