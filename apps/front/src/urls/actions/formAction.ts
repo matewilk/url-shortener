@@ -4,7 +4,29 @@ import { z } from "zod";
 import { client } from "@shortify/api-client/client";
 const apiClient = client("http://localhost:3001");
 
-export const submitUrlAction = async (
+interface OK<V> {
+  kind: "success";
+  value: V;
+}
+
+interface Err<E> {
+  kind: "error";
+  error: E;
+}
+
+export interface Init {
+  kind: "init";
+}
+
+type Result<T, E> = Init | OK<T> | Err<E>;
+
+interface SubmitUrlAction {
+  (prevState: unknown, formData: FormData): Promise<
+    Result<{ message: string }, { message: string }>
+  >;
+}
+
+export const submitUrlAction: SubmitUrlAction = async (
   prevState: unknown,
   formData: FormData
 ) => {
@@ -25,16 +47,19 @@ export const submitUrlAction = async (
 
     if (error) {
       return {
-        message: "Internal server error",
+        kind: "error",
+        error: { message: "Internal server error" },
       };
     }
 
     return {
-      message: `Form submitted with ${data?.shortUrl}`,
+      kind: "success",
+      value: { message: `Form submitted with ${data?.shortUrl}` },
     };
   } catch (error) {
     return {
-      message: "Invalid URL",
+      kind: "error",
+      error: { message: "Invalid URL" },
     };
   }
 };

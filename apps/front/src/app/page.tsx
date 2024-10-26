@@ -1,5 +1,5 @@
-import { Form } from "../urls/components/Form";
+import { SubmitUrlForm } from "../urls/components/SubmitUrlForm";
 
 export default function Home() {
-  return <Form />;
+  return <SubmitUrlForm />;
 }
