@@ -18,6 +18,7 @@ export interface Init {
   kind: "init";
 }
 
+// TODO: Result type again
 type Result<T, E> = Init | OK<T> | Err<E>;
 
 interface SubmitUrlAction {
