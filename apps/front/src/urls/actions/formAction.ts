@@ -48,18 +48,18 @@ export const submitUrlAction: SubmitUrlAction = async (
     if (error) {
       return {
         kind: "error",
-        error: { message: "Internal server error" },
+        error: { message: "Internal server error." },
       };
     }
 
     return {
       kind: "success",
-      value: { message: `Form submitted with ${data?.shortUrl}` },
+      value: { message: `${data?.shortUrl}` },
     };
   } catch (error) {
     return {
       kind: "error",
-      error: { message: "Invalid URL" },
+      error: { message: "Please enter a valid URL and try again." },
     };
   }
 };

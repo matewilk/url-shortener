@@ -8,7 +8,7 @@ vi.mock("react-dom", () => ({
   useFormState: vi
     .fn()
     .mockImplementation(() => [
-      { kind: "success", value: { message: "OK" } },
+      { kind: "success", value: { message: "encodedurl" } },
       vi.fn(),
       false,
     ]),
@@ -31,13 +31,14 @@ describe("Submit Url Form", () => {
 
   test("submits valid form", () => {
     render(<SubmitUrlForm />);
-    const input = screen.getByRole("textbox");
+    const input = screen.getByLabelText("Url");
     const submit = screen.getByRole("button", { name: "Submit" });
 
     fireEvent.change(input, { target: { value: "https://example.com" } });
     fireEvent.click(submit);
 
-    expect(screen.getByText("OK")).toBeDefined();
+    const urlBox = screen.getByLabelText("Url box");
+    expect(urlBox.getAttribute("value")).toBe("localhost:3000/encodedurl");
   });
 
   test("shows error message on invalid form", () => {
