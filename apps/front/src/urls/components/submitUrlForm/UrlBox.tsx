@@ -1,5 +1,5 @@
-import { CopyToClipBtn } from "@/urls/components/CopyToClipBtn";
-import { OpenUrlBtn } from "@/urls/components/OpenUrlBtn";
+import { CopyToClipBtn } from "@/urls/components/submitUrlForm/CopyToClipBtn";
+import { OpenUrlBtn } from "@/urls/components/submitUrlForm/OpenUrlBtn";
 
 type UrlBoxProps = {
   host: string;

@@ -1,9 +1,9 @@
 "use client";
 import { useActionState } from "react";
 
-import { submitUrlAction, Init } from "@/urls/actions/formAction";
+import { submitUrlAction, Init } from "@/urls/actions/submitUrlAction";
 import { UrlBox } from "./UrlBox";
-import { ErrorMessage } from "./Error";
+import { ErrorMessage } from "./ErrorBox";
 import { useEffect, useRef } from "react";
 
 const initialState: Init = {
