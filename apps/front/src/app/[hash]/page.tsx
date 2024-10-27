@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 
 const apiClient = client("http://localhost:3001");
 
-export default async function Page({
-  params: { hash },
-}: {
-  params: { hash: string };
-}) {
+type Params = Promise<{
+  hash: string;
+}>;
+
+export default async function Page(props: { params: Params }) {
+  const { hash } = await props.params;
+
   const { data, error } = await apiClient.GET(`/{shortUrl}`, {
     params: { path: { shortUrl: hash } },
   });
