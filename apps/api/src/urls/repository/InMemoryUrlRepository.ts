@@ -1,9 +1,11 @@
-import { ShortenedUrl, UrlRepository, Result } from "./UrlRepository";
+import { Result, ok, err } from "@/Result";
+import { ShortenedUrl, UrlRepository } from "./UrlRepository";
+import { toError } from "@/error";
 
 export class InMemoryUrlRepository implements UrlRepository {
   private store: Record<number, ShortenedUrl> = {};
 
-  create = (
+  create = async (
     draft: ShortenedUrl.Draft
   ): Promise<Result<ShortenedUrl, Error>> => {
     try {
@@ -13,48 +15,38 @@ export class InMemoryUrlRepository implements UrlRepository {
       };
 
       if (this.store[record.id]) {
-        return Promise.reject({
-          kind: "error",
-          error: new Error("Record already exists"),
-        });
+        return err(new Error("Record already exists"));
       }
 
       this.store[record.id] = record;
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 
-  findById = (id: number): Promise<Result<ShortenedUrl | null, Error>> => {
+  findById = async (
+    id: number
+  ): Promise<Result<ShortenedUrl | null, Error>> => {
     try {
-      return Promise.resolve({
-        kind: "success",
-        value: this.store[id] ?? null,
-      });
+      return ok(this.store[id] ?? null);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 
-  getNextId = (): Promise<Result<number, Error>> => {
+  getNextId = async (): Promise<Result<number, Error>> => {
     try {
       const nextId = Object.keys(this.store).length + 1;
 
       if (isNaN(nextId)) {
-        return Promise.reject({
-          kind: "error",
-          error: new Error("Failed to generate next ID"),
-        });
+        return err(new Error("Failed to generate next ID"));
       }
 
-      return Promise.resolve({
-        kind: "success",
-        value: Object.keys(this.store).length + 1,
-      });
+      return ok(Object.keys(this.store).length + 1);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 }

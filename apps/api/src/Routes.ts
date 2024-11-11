@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { JwtAuthService } from "./auth/service/AuthService";
+import { JwtAuthService } from "./auth/service/JwtAuthService";
 
 export interface Route<Services extends Record<string, unknown>> {
   (req: Request, res: Response, services: Services): Promise<Response>;

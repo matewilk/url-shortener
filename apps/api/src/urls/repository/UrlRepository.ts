@@ -1,3 +1,5 @@
+import { Result } from "@/Result";
+
 export interface UrlRepository {
   create: (url: ShortenedUrl.Draft) => Promise<Result<ShortenedUrl, Error>>;
 
@@ -5,18 +7,6 @@ export interface UrlRepository {
 
   getNextId: () => Promise<Result<number, Error>>;
 }
-
-export type Result<T, E> = Ok<T> | Err<E>;
-
-export type Ok<T> = {
-  kind: "success";
-  value: T;
-};
-
-export type Err<E> = {
-  kind: "error";
-  error: E;
-};
 
 export type ShortenedUrl = {
   id: number;

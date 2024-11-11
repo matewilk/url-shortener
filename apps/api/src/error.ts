@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 interface Logger {
   log: (message: string) => void;
@@ -30,4 +31,31 @@ export class ErrorHandler {
 
     return res.status(500).json({ error: "Internal server error" });
   }
+}
+
+export const toError = (error: unknown): Error => {
+  if (error instanceof Error) {
+    return error;
+  }
+
+  return new Error(`An unexpected error occurred ${JSON.stringify(error)}`);
+};
+
+export namespace PrismaError {
+  export type RequestError = Prisma.PrismaClientKnownRequestError;
+
+  const codes = {
+    uniqueConstraint: "P2002",
+    foreignKeyContraint: "P2003",
+    recordNotFound: "P2025",
+  } as const;
+
+  export const isForeignKeyConstraintError = (error: RequestError): boolean =>
+    error.code === codes.foreignKeyContraint;
+
+  export const isUniqueConstraintError = (error: RequestError): boolean =>
+    error.code === codes.uniqueConstraint;
+
+  export const isRecordNotFoundError = (error: RequestError): boolean =>
+    error.code === codes.recordNotFound;
 }

@@ -18,7 +18,7 @@ import {
 } from "./users/routes";
 import { DbUserRepository } from "./users/repository/DbUserRepository";
 import { UserService } from "./users/service/UserService";
-import { JwtAuthService } from "./auth/service/AuthService";
+import { JwtAuthService } from "./auth/service/JwtAuthService";
 
 import { withAuth, withServices } from "./Routes";
 
