@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { UserServiceSpec } from "./UserServiceSpec";
 import { UserService } from "../../src/users/service/UserService";
 import { DbUserRepository } from "../../src/users/repository/DbUserRepository";
-import { JwtAuthService } from "../../src/auth/service/AuthService";
+import { JwtAuthService } from "../../src/auth/service/JwtAuthService";
 
 const prisma = new PrismaClient();
 console.log("DB_URL", process.env.DATABASE_URL);
