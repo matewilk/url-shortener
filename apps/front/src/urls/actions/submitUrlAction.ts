@@ -40,6 +40,7 @@ export const submitUrlAction: SubmitUrlAction = async (
       url: formData.get("url"),
     });
 
+    // TODO: this apiClinet returns wrong types
     const { data, error } = await apiClient.POST("/shorten", {
       body: {
         url,
