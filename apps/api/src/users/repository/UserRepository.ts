@@ -1,4 +1,6 @@
-export interface UserRepositopr {
+import { Result } from "@/Result";
+
+export interface UserRepository {
   create: (user: User.Draft) => Promise<Result<User.Return, Error>>;
 
   findById: (id: number) => Promise<Result<User | null, Error>>;
@@ -10,18 +12,6 @@ export interface UserRepositopr {
   delete: (id: number) => Promise<Result<User, Error>>;
 }
 
-export type Result<T, E> = Ok<T> | Err<E>;
-
-export type Ok<T> = {
-  kind: "success";
-  value: T;
-};
-
-export type Err<E> = {
-  kind: "error";
-  error: E;
-};
-
 export type User = {
   id: number;
   name: string;
@@ -32,5 +22,5 @@ export type User = {
 export namespace User {
   export type Draft = Omit<User, "id">;
   export type Update = { id: number } & Partial<Draft>;
-  export type Return = Omit<User, "email" | "password">;
+  export type Return = Omit<User, "password">; // | "email"
 }

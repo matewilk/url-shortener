@@ -6,4 +6,9 @@ export default defineConfig({
       JWT_SECRET: "jwt-sercret-test",
     },
   },
+  resolve: {
+    alias: {
+      "@": "/src",
+    },
+  },
 });

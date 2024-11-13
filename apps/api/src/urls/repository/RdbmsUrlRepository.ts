@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { ShortenedUrl, UrlRepository, Result } from "./UrlRepository";
+
+import { Result, ok, err } from "@/Result";
+import { toError } from "@/error";
+import { ShortenedUrl, UrlRepository } from "./UrlRepository";
 
 export class RdbmsUrlRepository implements UrlRepository {
   constructor(private readonly db: PrismaClient) {}
@@ -15,9 +18,9 @@ export class RdbmsUrlRepository implements UrlRepository {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 
@@ -31,9 +34,9 @@ export class RdbmsUrlRepository implements UrlRepository {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 
@@ -44,9 +47,9 @@ export class RdbmsUrlRepository implements UrlRepository {
         { nextval: bigint }[]
       >`SELECT nextval(pg_get_serial_sequence('"Url"', 'id'))`;
 
-      return Promise.resolve({ kind: "success", value: Number(nextId) });
+      return ok(Number(nextId));
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   };
 }

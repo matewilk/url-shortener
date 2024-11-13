@@ -1,9 +1,10 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 
-import { Result, User, UserRepositopr } from "./UserRepository";
-import { DbError } from "../../error";
+import { Result, ok, err } from "@/Result";
+import { User, UserRepository } from "./UserRepository";
+import { DbError, PrismaError, toError } from "@/error";
 
-export class DbUserRepository implements UserRepositopr {
+export class DbUserRepository implements UserRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async create(user: User.Draft): Promise<Result<User.Return, Error>> {
@@ -16,9 +17,15 @@ export class DbUserRepository implements UserRepositopr {
       });
 
       // TODO: why typescript is not shouting about too many fields in the returned record?
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        PrismaError.isUniqueConstraintError(error)
+      ) {
+        return err(new Error("Email already in use"));
+      }
+      return err(toError(error));
     }
   }
 
@@ -30,9 +37,9 @@ export class DbUserRepository implements UserRepositopr {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   }
 
@@ -44,9 +51,9 @@ export class DbUserRepository implements UserRepositopr {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   }
 
@@ -60,9 +67,9 @@ export class DbUserRepository implements UserRepositopr {
         data,
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   }
 
@@ -74,18 +81,15 @@ export class DbUserRepository implements UserRepositopr {
         },
       });
 
-      return Promise.resolve({ kind: "success", value: record });
+      return ok(record);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === "P2025") {
-          // TODO: handle this more gracefully
-          return Promise.resolve({
-            kind: "error",
-            error: new DbError(`User with ID ${id} not found.`, 404),
-          });
-        }
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        PrismaError.isRecordNotFoundError(error)
+      ) {
+        return err(new DbError(`User with ID ${id} not found.`, 404));
       }
-      return Promise.reject({ kind: "error", error });
+      return err(toError(error));
     }
   }
 }
