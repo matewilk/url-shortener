@@ -1,41 +1,52 @@
 import { test, describe, beforeAll, expect, vi } from "vitest";
+import { Request, Response } from "express";
 
 import { shorten } from "./shorten";
 import { ErrorHandler } from "../../error";
 
-const mockUrlShorteningService = {
+const mockedUrlShorteningService = {
   shorten: vi.fn(),
   expand: async () => ({ kind: "success" as const, value: "_" }),
 };
 
-const mockLogger = {
+const mockedLogger = {
   error: vi.fn(),
   log: vi.fn(),
   info: vi.fn(),
 };
 
 describe("shortenUrlRoute", () => {
-  let postRoute: any;
+  let errorHandler: ErrorHandler;
   beforeAll(() => {
-    const errorHandler = new ErrorHandler(mockLogger);
-    postRoute = shorten(mockUrlShorteningService, errorHandler);
+    errorHandler = new ErrorHandler(mockedLogger);
   });
 
   test("returns a shortened url", async () => {
-    mockUrlShorteningService.shorten.mockResolvedValue("shortUrl");
-    const req = { body: { url: "https://example.com" } };
-    const res = { json: vi.fn() };
+    mockedUrlShorteningService.shorten.mockResolvedValue("shortUrl");
+    const req: Partial<Request> = {
+      body: { url: "https://example.com" },
+    };
+    const res: Partial<Response> = { json: vi.fn() };
 
-    await postRoute(req, res);
+    await shorten(req as Request, res as Response, {
+      urlService: mockedUrlShorteningService,
+      errorHandler,
+    });
 
     expect(res.json).toHaveBeenCalledWith({ shortUrl: "shortUrl" });
   });
 
   test("returns 400 on invalid url", async () => {
-    const req = { body: { url: "invalid" } };
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() };
+    const req: Partial<Request> = { body: { url: "invalid" } };
+    const res: Partial<Response> = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    };
 
-    await postRoute(req, res);
+    await shorten(req as Request, res as Response, {
+      urlService: mockedUrlShorteningService,
+      errorHandler,
+    });
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -44,10 +55,16 @@ describe("shortenUrlRoute", () => {
   });
 
   test("returns 400 on invalid post body", async () => {
-    const req = { body: { shortUrl: "https://example.com" } };
-    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() };
+    const req: Partial<Request> = { body: { shortUrl: "https://example.com" } };
+    const res: Partial<Response> = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    };
 
-    await postRoute(req, res);
+    await shorten(req as Request, res as Response, {
+      urlService: mockedUrlShorteningService,
+      errorHandler,
+    });
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({

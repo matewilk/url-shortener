@@ -2,7 +2,7 @@ import { Result, ok, err } from "@/Result";
 import { toError } from "@/error";
 
 import { AuthService, Token } from "../../auth/service/AuthService";
-import { User, UserRepositopr } from "../repository/UserRepository";
+import { User, UserRepository } from "../repository/UserRepository";
 
 export interface UserServiceType {
   register: (user: User.Draft) => Promise<Result<User.Return, Error>>;
@@ -22,7 +22,7 @@ export interface UserServiceType {
 }
 
 export class UserService implements UserServiceType {
-  constructor(private repo: UserRepositopr, public auth: AuthService) {}
+  constructor(private repo: UserRepository, public auth: AuthService) {}
 
   async register({
     name,
@@ -101,7 +101,6 @@ export class UserService implements UserServiceType {
     }
   }
 
-  // TODO: this should return a Result<User | null, Error> ?
   async findByEmail(email: string): Promise<Result<User | null, Error>> {
     try {
       const response = await this.repo.findByEmail(email);

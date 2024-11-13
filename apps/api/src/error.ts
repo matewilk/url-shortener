@@ -2,6 +2,8 @@ import { Response } from "express";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 
+// TODO: Clean the below mess up
+
 interface Logger {
   log: (message: string) => void;
   error: (message: string) => void;

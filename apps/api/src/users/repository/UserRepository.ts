@@ -1,6 +1,6 @@
 import { Result } from "@/Result";
 
-export interface UserRepositopr {
+export interface UserRepository {
   create: (user: User.Draft) => Promise<Result<User.Return, Error>>;
 
   findById: (id: number) => Promise<Result<User | null, Error>>;

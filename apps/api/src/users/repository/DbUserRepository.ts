@@ -1,10 +1,10 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 
 import { Result, ok, err } from "@/Result";
-import { User, UserRepositopr } from "./UserRepository";
+import { User, UserRepository } from "./UserRepository";
 import { DbError, PrismaError, toError } from "@/error";
 
-export class DbUserRepository implements UserRepositopr {
+export class DbUserRepository implements UserRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async create(user: User.Draft): Promise<Result<User.Return, Error>> {

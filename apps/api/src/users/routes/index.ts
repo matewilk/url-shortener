@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 
-import { Route } from "../../Routes";
+import { Route } from "@/Routes";
 import { UserServiceType } from "../service/UserService";
-import { ErrorHandler } from "../../error";
+import { ErrorHandler } from "@/error";
 
 type UserRouteServices = {
   userService: UserServiceType;

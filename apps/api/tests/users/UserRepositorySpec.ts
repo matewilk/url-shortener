@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
 import fc from "fast-check";
 
-import { UserRepositopr } from "../../src/users/repository/UserRepository";
+import { UserRepository } from "../../src/users/repository/UserRepository";
 
 export namespace UserRepositorySpec {
-  export const run = (repo: UserRepositopr) => {
+  export const run = (repo: UserRepository) => {
     describe("UserRepository", () => {
       test("users can be created, found and deleted", async () => {
         let idCounter = 1;
