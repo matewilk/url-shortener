@@ -5,7 +5,7 @@ import { ErrorHandler } from "../../error";
 
 const mockUrlShorteningService = {
   shorten: vi.fn(),
-  expand: async () => "_",
+  expand: async () => ({ kind: "success" as const, value: "_" }),
 };
 
 const mockLogger = {
