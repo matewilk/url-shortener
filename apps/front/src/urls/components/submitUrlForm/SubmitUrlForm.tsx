@@ -5,6 +5,7 @@ import { submitUrlAction, Init } from "@/urls/actions/submitUrlAction";
 import { UrlBox } from "./UrlBox";
 import { ErrorMessage } from "./ErrorBox";
 import { useEffect, useRef } from "react";
+import { SpinnerButton } from "@/ui/SpinnerButton";
 
 const initialState: Init = {
   kind: "init",
@@ -37,13 +38,13 @@ export const SubmitUrlForm = () => {
             required
             disabled={isPending}
           />
-          <button
-            disabled={isPending}
+          <SpinnerButton
+            isPending={isPending}
             type="submit"
-            className="rounded-full bg-foreground text-background dark:hover:bg-[#ccc] sm:text-base h-10 sm:h-12 px-4 sm:px-5 min-w-80 sm:min-w-0"
+            disabled={isPending}
           >
-            {isPending ? "Submitting..." : "Submit"}
-          </button>
+            Submit
+          </SpinnerButton>
         </div>
         {state.kind === "success" && (
           // TODO: get host from env?
