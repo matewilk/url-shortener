@@ -126,8 +126,7 @@ export const updateUser: Route<UserRouteServices> = async (
     const { id } = updateUserParamsSchema.parse(req.params);
     const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-    const response = await userService.update({
-      id,
+    const response = await userService.update(id, {
       name,
       email,
       password,
@@ -153,13 +152,9 @@ export const deleteUser: Route<UserRouteServices> = async (
   try {
     const { id } = deleteUserSchema.parse(req.params);
 
-    const response = await userService.delete(id);
+    await userService.delete(id);
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
-    return res.json({ user: response });
+    return res.send(204);
   } catch (error) {
     return errorHandler.handleError(error as Error, res);
   }

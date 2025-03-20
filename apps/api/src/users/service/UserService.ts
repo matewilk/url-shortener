@@ -16,9 +16,9 @@ export interface UserServiceType {
 
   findByEmail: (email: string) => Promise<Result<User | null, Error>>;
 
-  update: (user: User.Update) => Promise<Result<User, Error>>;
+  update: (id: number, user: User.Patch) => Promise<Result<User, Error>>;
 
-  delete: (id: number) => Promise<Result<User, Error>>;
+  delete: (id: number) => Promise<void>;
 }
 
 export class UserService implements UserServiceType {
@@ -113,24 +113,18 @@ export class UserService implements UserServiceType {
     }
   }
 
-  async update({
-    id,
-    name,
-    email,
-    password,
-  }: User.Update): Promise<Result<User, Error>> {
-    const response = await this.repo.update({ id, name, email, password });
+  async update(
+    id: number,
+    { name, email, password }: User.Patch
+  ): Promise<Result<User, Error>> {
+    const response = await this.repo.update(id, { name, email, password });
 
     return response.kind === "success"
       ? ok(response.value)
       : err(response.error);
   }
 
-  async delete(id: number): Promise<Result<User, Error>> {
-    const response = await this.repo.delete(id);
-
-    return response.kind === "success"
-      ? ok(response.value)
-      : err(response.error);
+  async delete(id: number): Promise<void> {
+    await this.repo.delete(id);
   }
 }
