@@ -2,16 +2,18 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { Result, ok, err } from "@/Result";
-import { AuthService, Token } from "./AuthService";
+import { AuthService, Token, Auth } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
-  async hashPassword(password: string): Promise<Result<string, Error>> {
+  async hashPassword(
+    password: string
+  ): Promise<Result<string, Auth.ErrorHashingPassword>> {
     try {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       return ok(hashedPassword);
     } catch (error) {
-      return err(new Error("Error hashing password"));
+      return err(new Auth.ErrorHashingPassword());
     }
   }
 
@@ -31,7 +33,7 @@ export class JwtAuthService implements AuthService {
   async generateAuthToken(
     payload: Token.Payload,
     expiresIn?: string
-  ): Promise<Result<{ token: string }, Error>> {
+  ): Promise<Result<{ token: string }, Token.ErrorCreating>> {
     try {
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
@@ -39,7 +41,7 @@ export class JwtAuthService implements AuthService {
 
       return ok({ token });
     } catch (error) {
-      return err(new Error("Error creating token"));
+      return err(new Token.ErrorCreating());
     }
   }
 
@@ -51,10 +53,12 @@ export class JwtAuthService implements AuthService {
 
       return ok(decoded);
     } catch (error) {
-      return err(new Error("Invalid token"));
+      return err(error as Error);
     }
   }
 
+  // TODO: granural access control
+  // NOT used at the moment
   async authorise(
     token: string,
     payload: Token.Payload
@@ -62,7 +66,7 @@ export class JwtAuthService implements AuthService {
     const response = await this.validateAuthToken(token);
 
     if (response.kind === "error") {
-      return response;
+      return err(response.error);
     }
 
     // TODO: ??

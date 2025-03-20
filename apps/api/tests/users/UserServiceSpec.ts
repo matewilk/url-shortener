@@ -46,8 +46,7 @@ export namespace UserServiceSpec {
                 const found = await userService.findById(created.id);
                 expect(found).toEqual(created);
 
-                const updated = await userService.update({
-                  id: created.id,
+                const updated = await userService.update(created.id, {
                   name: "updated name",
                 });
 

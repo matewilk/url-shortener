@@ -40,15 +40,21 @@ app.post("/shorten", withServices(shorten, { urlService, errorHandler }));
 app.get("/:shortUrl", withServices(expand, { urlService, errorHandler }));
 
 app.post("/users", withServices(registerUser, { userService, errorHandler }));
-app.get("/users/id/:id", withAuth(findUserById, { userService, errorHandler }));
+app.get(
+  "/users/id/:id",
+  withAuth(findUserById, authService, { userService, errorHandler })
+);
 app.get(
   "/users/email/:email",
-  withAuth(findUserByEmail, { userService, errorHandler })
+  withAuth(findUserByEmail, authService, { userService, errorHandler })
 );
-app.put("/users/id/:id", withAuth(updateUser, { userService, errorHandler }));
+app.put(
+  "/users/id/:id",
+  withAuth(updateUser, authService, { userService, errorHandler })
+);
 app.delete(
   "/users/id/:id",
-  withAuth(deleteUser, { userService, errorHandler })
+  withAuth(deleteUser, authService, { userService, errorHandler })
 );
 
 app.post("/login", withServices(loginUser, { userService, errorHandler }));
