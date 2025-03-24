@@ -1,34 +1,20 @@
 import { Result } from "@/Result";
 
 export interface AuthService {
-  hashPassword: (
-    password: string
-  ) => Promise<Result<string, Auth.ErrorHashingPassword>>;
-  verifyPassword: (
-    password: string,
-    dbPassword: string
-  ) => Promise<Result<boolean, Error>>;
+  hashPassword: (password: string) => Promise<string>;
+  verifyPassword: (password: string, dbPassword: string) => Promise<boolean>;
   generateAuthToken: (
     payload: Token.Payload,
     expiresIn?: string
   ) => Promise<Result<Token.Draft, Token.ErrorCreating>>;
   validateAuthToken: (
     token: string
-    // TODO: ok to use Record<string, unknown> here?
-  ) => Promise<Result<Record<string, unknown> | string, Error>>;
+    // TODO: ok to use Record<string, unknown> here instead of JwtPayload?
+  ) => Promise<Result<Record<string, unknown>, Error>>;
   authorise: (
     token: string,
     payload: Token.Payload
   ) => Promise<Result<boolean, Error>>;
-}
-
-export namespace Auth {
-  export class ErrorHashingPassword extends Error {
-    tag: "ErrorHashingPassword" = "ErrorHashingPassword";
-  }
-  export class ErrorVerifyingPassword extends Error {
-    tag: "ErrorVerifyingPassword" = "ErrorVerifyingPassword";
-  }
 }
 
 export namespace Token {

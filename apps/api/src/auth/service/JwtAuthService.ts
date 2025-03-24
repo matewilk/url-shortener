@@ -2,31 +2,23 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { Result, ok, err } from "@/Result";
-import { AuthService, Token, Auth } from "./AuthService";
+import { AuthService, Token } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
-  async hashPassword(
-    password: string
-  ): Promise<Result<string, Auth.ErrorHashingPassword>> {
+  async hashPassword(password: string): Promise<string> {
     try {
       const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-      return ok(hashedPassword);
+      return await bcrypt.hash(password, saltRounds);
     } catch (error) {
-      return err(new Auth.ErrorHashingPassword());
+      throw error;
     }
   }
 
-  async verifyPassword(
-    password: string,
-    dbPassword: string
-  ): Promise<Result<boolean, Error>> {
+  async verifyPassword(password: string, dbPassword: string): Promise<boolean> {
     try {
-      const match = await bcrypt.compare(password, dbPassword);
-
-      return ok(match);
+      return await bcrypt.compare(password, dbPassword);
     } catch (error) {
-      return err(new Error("Error verifying password"));
+      throw error;
     }
   }
 
@@ -45,11 +37,11 @@ export class JwtAuthService implements AuthService {
     }
   }
 
-  async validateAuthToken(
-    token: string
-  ): Promise<Result<JwtPayload | string, Error>> {
+  async validateAuthToken(token: string): Promise<Result<JwtPayload, Error>> {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string, {
+        complete: true,
+      });
 
       return ok(decoded);
     } catch (error) {

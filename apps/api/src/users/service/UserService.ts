@@ -29,22 +29,12 @@ export class UserService implements UserServiceType {
     email,
     password,
   }: User.Draft): Promise<Result<User.Return, Error>> {
-    const userExists = await this.repo.findByEmail(email);
-
-    // TODO: user repo interface does not clearly define the return type
-    if (userExists.kind === "success" && userExists.value !== null) {
-      return err(new Error("User already exists"));
-    }
-
-    const hashResponse = await this.auth.hashPassword(password);
-    if (hashResponse.kind === "error") {
-      return err(hashResponse.error);
-    }
+    const hashedPassword = await this.auth.hashPassword(password);
 
     const response = await this.repo.create({
       name,
       email,
-      password: hashResponse.value,
+      password: hashedPassword,
     });
 
     return response.kind === "success"
@@ -62,20 +52,12 @@ export class UserService implements UserServiceType {
       return err(user.error);
     }
 
-    if (user.value === null) {
-      return err(new Error("User not found"));
-    }
-
-    const verifyResponse = await this.auth.verifyPassword(
+    const passwordMatch = await this.auth.verifyPassword(
       password,
       user.value.password
     );
 
-    if (verifyResponse.kind === "error") {
-      return err(verifyResponse.error);
-    }
-
-    if (!verifyResponse.value) {
+    if (passwordMatch) {
       return err(new Error("Invalid password"));
     }
 
