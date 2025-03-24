@@ -2,7 +2,7 @@ import { beforeEach, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 
 import { UserServiceSpec } from "./UserServiceSpec";
-import { UserService } from "../../src/users/service/UserService";
+import { DefaultUserService } from "../../src/users/service/DefaultUserService";
 import { DbUserRepository } from "../../src/users/repository/DbUserRepository";
 import { JwtAuthService } from "../../src/auth/service/JwtAuthService";
 
@@ -19,4 +19,4 @@ afterAll(async () => {
 
 const userRepositopr = new DbUserRepository(prisma);
 const authService = new JwtAuthService();
-UserServiceSpec.run(new UserService(userRepositopr, authService));
+UserServiceSpec.run(new DefaultUserService(userRepositopr, authService));

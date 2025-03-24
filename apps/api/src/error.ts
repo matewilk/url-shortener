@@ -35,14 +35,6 @@ export class ErrorHandler {
   }
 }
 
-export const toError = (error: unknown): Error => {
-  if (error instanceof Error) {
-    return error;
-  }
-
-  return new Error(`An unexpected error occurred ${JSON.stringify(error)}`);
-};
-
 export namespace PrismaError {
   export type RequestError = Prisma.PrismaClientKnownRequestError;
 

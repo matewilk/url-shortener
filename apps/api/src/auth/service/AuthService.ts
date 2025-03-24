@@ -2,7 +2,10 @@ import { Result } from "@/Result";
 
 export interface AuthService {
   hashPassword: (password: string) => Promise<string>;
-  verifyPassword: (password: string, dbPassword: string) => Promise<boolean>;
+  verifyPassword: (
+    password: string,
+    dbPassword: string
+  ) => Promise<Result<boolean, Auth.InvalidPassword>>;
   generateAuthToken: (
     payload: Token.Payload,
     expiresIn?: string
@@ -15,6 +18,12 @@ export interface AuthService {
     token: string,
     payload: Token.Payload
   ) => Promise<Result<boolean, Error>>;
+}
+
+export namespace Auth {
+  export class InvalidPassword extends Error {
+    tag: "InvalidPasswrod" = "InvalidPasswrod";
+  }
 }
 
 export namespace Token {

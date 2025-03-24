@@ -17,7 +17,7 @@ import {
   loginUser,
 } from "./users/routes";
 import { DbUserRepository } from "./users/repository/DbUserRepository";
-import { UserService } from "./users/service/UserService";
+import { DefaultUserService } from "./users/service/DefaultUserService";
 import { JwtAuthService } from "./auth/service/JwtAuthService";
 
 import { withAuth, withServices } from "./Routes";
@@ -30,7 +30,7 @@ const urlService = new UrlService(urlRepository, hash);
 
 const userRepositopr = new DbUserRepository(prisma);
 const authService = new JwtAuthService();
-const userService = new UserService(userRepositopr, authService);
+const userService = new DefaultUserService(userRepositopr, authService);
 
 const app = express();
 

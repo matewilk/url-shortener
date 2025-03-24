@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
 import fc from "fast-check";
 
-import { UserServiceType } from "../../src/users/service/UserService";
+import { UserService } from "../../src/users/service/UserService";
 
 export namespace UserServiceSpec {
-  export const run = (userService: UserServiceType) => {
+  export const run = (userService: UserService) => {
     describe("UserService", () => {
       // TODO: this clashes with UserRepository test, skipping for now
       test.skip("users can be created, logged in, found, updated and deleted", async () => {

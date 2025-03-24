@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { Result, ok, err } from "@/Result";
-import { AuthService, Token } from "./AuthService";
+import { AuthService, Token, Auth } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<string> {
@@ -14,9 +14,16 @@ export class JwtAuthService implements AuthService {
     }
   }
 
-  async verifyPassword(password: string, dbPassword: string): Promise<boolean> {
+  async verifyPassword(
+    password: string,
+    dbPassword: string
+  ): Promise<Result<boolean, Auth.InvalidPassword>> {
     try {
-      return await bcrypt.compare(password, dbPassword);
+      const isValid = await bcrypt.compare(password, dbPassword);
+
+      if (!isValid) return err(new Auth.InvalidPassword());
+
+      return ok(isValid);
     } catch (error) {
       throw error;
     }
