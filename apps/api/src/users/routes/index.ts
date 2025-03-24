@@ -147,7 +147,7 @@ const deleteUserSchema = baseUserSchema.pick({ id: true });
 export const deleteUser: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { id } = deleteUserSchema.parse(req.params);
@@ -156,6 +156,6 @@ export const deleteUser: Route<UserRouteServices> = async (
 
     return res.send(204);
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { AuthService } from "./auth/service/AuthService";
 
@@ -11,8 +11,13 @@ export const withServices =
     route: Route<Services>,
     services: Services
   ) =>
-  (req: Request, res: Response) =>
-    route(req, res, services);
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await route(req, res, services);
+    } catch (error) {
+      next(error);
+    }
+  };
 
 export const withAuth =
   <Services extends Record<string, unknown>>(
@@ -20,16 +25,20 @@ export const withAuth =
     authService: AuthService,
     services: Services
   ) =>
-  async (req: Request, res: Response) => {
-    const token = req.headers.authorization?.split(" ")[1];
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+      if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
 
-    const result = await authService.validateAuthToken(token);
-    if (result.kind === "error") {
-      return res.status(401).json({ error: result.error.message });
+      const result = await authService.validateAuthToken(token);
+      if (result.kind === "error") {
+        return res.status(401).json({ error: result.error.message });
+      }
+      await route(req, res, { ...services, user: result.value });
+    } catch (error) {
+      next(error);
     }
-    return route(req, res, { ...services, user: result.value });
   };

@@ -62,7 +62,7 @@ app.post("/login", withServices(loginUser, { userService, errorHandler }));
 import { Request, Response, NextFunction } from "express";
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.send(500);
+  res.status(500).json({ error: err.message || "Internal server error" });
 });
 
 export default app;
