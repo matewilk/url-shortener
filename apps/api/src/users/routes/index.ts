@@ -3,11 +3,9 @@ import { z } from "zod";
 
 import { Route } from "@/Routes";
 import { UserService } from "../service/UserService";
-import { ErrorHandler } from "@/error";
 
 type UserRouteServices = {
   userService: UserService;
-  errorHandler: ErrorHandler;
 };
 
 const idSchema = z.coerce.number();

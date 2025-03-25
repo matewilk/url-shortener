@@ -15,7 +15,7 @@ export class UrlService implements UrlServiceType {
 
     //TODO: not necessarily pass on error?
     if (nextIdResponse.kind === "error") {
-      return err(nextIdResponse.error);
+      throw nextIdResponse.error;
     }
 
     const id = Number(nextIdResponse.value);

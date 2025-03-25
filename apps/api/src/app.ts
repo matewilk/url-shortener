@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import { PrismaClient } from "@prisma/client";
 
-import { ErrorHandler } from "./error";
 import { UrlService } from "./urls/service/UrlService";
 import { shorten } from "./urls/routes/shorten";
 import { expand } from "./urls/routes/expand";
@@ -22,7 +21,6 @@ import { JwtAuthService } from "./auth/service/JwtAuthService";
 
 import { withAuth, withServices } from "./Routes";
 
-const errorHandler = new ErrorHandler();
 const hash = new Base62();
 const prisma = new PrismaClient();
 const urlRepository = new RdbmsUrlRepository(prisma);
@@ -36,28 +34,19 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post("/shorten", withServices(shorten, { urlService, errorHandler }));
-app.get("/:shortUrl", withServices(expand, { urlService, errorHandler }));
+app.post("/shorten", withServices(shorten, { urlService }));
+app.get("/:shortUrl", withServices(expand, { urlService }));
 
-app.post("/users", withServices(registerUser, { userService, errorHandler }));
-app.get(
-  "/users/id/:id",
-  withAuth(findUserById, authService, { userService, errorHandler })
-);
+app.post("/users", withServices(registerUser, { userService }));
+app.get("/users/id/:id", withAuth(findUserById, authService, { userService }));
 app.get(
   "/users/email/:email",
-  withAuth(findUserByEmail, authService, { userService, errorHandler })
+  withAuth(findUserByEmail, authService, { userService })
 );
-app.put(
-  "/users/id/:id",
-  withAuth(updateUser, authService, { userService, errorHandler })
-);
-app.delete(
-  "/users/id/:id",
-  withAuth(deleteUser, authService, { userService, errorHandler })
-);
+app.put("/users/id/:id", withAuth(updateUser, authService, { userService }));
+app.delete("/users/id/:id", withAuth(deleteUser, authService, { userService }));
 
-app.post("/login", withServices(loginUser, { userService, errorHandler }));
+app.post("/login", withServices(loginUser, { userService }));
 
 import { Request, Response, NextFunction } from "express";
 

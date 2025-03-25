@@ -57,7 +57,7 @@ export namespace AuthServiceSpec {
                 hashedPassword
               );
 
-              expect(verified).toEqual(true);
+              expect(verified).toEqual({ kind: "success", value: true });
             }
           ),
           { interruptAfterTimeLimit: 1500 }

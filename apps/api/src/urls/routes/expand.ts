@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 
 import { paths } from "@shortify/api-client/schema";
 import { UrlServiceType } from "../service/UrlService";
-import { ErrorHandler } from "../../error";
 import { Route } from "@/Routes";
 
 type ExpandUrlRouteServices = {
   urlService: UrlServiceType;
-  errorHandler: ErrorHandler;
 };
 
 type ShortUrl = paths["/{shortUrl}"]["get"]["parameters"]["path"];
@@ -20,7 +18,7 @@ const shortUrlSchema = z.object({
 export const expand: Route<ExpandUrlRouteServices> = async (
   req: Request,
   res: Response,
-  { urlService, errorHandler }
+  { urlService }
 ): Promise<Response> => {
   try {
     const params = shortUrlSchema.parse(req.params);
@@ -29,12 +27,14 @@ export const expand: Route<ExpandUrlRouteServices> = async (
 
     const response = await urlService.expand(shortUrl);
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
     return res.json({ url: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: "Invalid input parameters",
+        details: error.flatten(),
+      });
+    }
+    throw error;
   }
 };

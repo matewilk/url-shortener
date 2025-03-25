@@ -1,13 +1,11 @@
-import { Request, Response } from "express";
-import { z } from "zod";
+import { Response } from "express";
+import { z, ZodError } from "zod";
 
 import { UrlServiceType } from "../service/UrlService";
-import { ErrorHandler } from "../../error";
 import { Route } from "@/Routes";
 
 type ShortenUrlRouteServices = {
   urlService: UrlServiceType;
-  errorHandler: ErrorHandler;
 };
 
 const urlSchema = z.object({
@@ -17,7 +15,7 @@ const urlSchema = z.object({
 export const shorten: Route<ShortenUrlRouteServices> = async (
   req,
   res,
-  { urlService, errorHandler }
+  { urlService }
 ): Promise<Response> => {
   try {
     const body = urlSchema.parse(req.body);
@@ -26,12 +24,14 @@ export const shorten: Route<ShortenUrlRouteServices> = async (
 
     const result = await urlService.shorten(url);
 
-    if (result instanceof Error) {
-      return errorHandler.handleError(result, res);
-    }
-
     return res.json({ shortUrl: result });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: "Invalid input parameters",
+        details: error.flatten(),
+      });
+    }
+    throw error;
   }
 };
