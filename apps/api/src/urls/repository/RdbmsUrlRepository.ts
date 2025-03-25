@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
 import { Result, ok, err } from "@/Result";
-import { toError } from "@/error";
 import { ShortenedUrl, UrlRepository } from "./UrlRepository";
 
 export class RdbmsUrlRepository implements UrlRepository {
@@ -20,13 +19,13 @@ export class RdbmsUrlRepository implements UrlRepository {
 
       return ok(record);
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 
   findById = async (
     id: number
-  ): Promise<Result<ShortenedUrl | null, Error>> => {
+  ): Promise<Result<ShortenedUrl, ShortenedUrl.NotFound>> => {
     try {
       const record = await this.db.url.findUnique({
         where: {
@@ -34,9 +33,11 @@ export class RdbmsUrlRepository implements UrlRepository {
         },
       });
 
+      if (!record) return err(new ShortenedUrl.NotFound());
+
       return ok(record);
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 
@@ -49,7 +50,7 @@ export class RdbmsUrlRepository implements UrlRepository {
 
       return ok(Number(nextId));
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 }

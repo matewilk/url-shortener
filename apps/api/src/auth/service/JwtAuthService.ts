@@ -2,36 +2,37 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { Result, ok, err } from "@/Result";
-import { AuthService, Token } from "./AuthService";
+import { AuthService, Token, Auth } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
-  async hashPassword(password: string): Promise<Result<string, Error>> {
+  async hashPassword(password: string): Promise<string> {
     try {
       const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-      return ok(hashedPassword);
+      return await bcrypt.hash(password, saltRounds);
     } catch (error) {
-      return err(new Error("Error hashing password"));
+      throw error;
     }
   }
 
   async verifyPassword(
     password: string,
     dbPassword: string
-  ): Promise<Result<boolean, Error>> {
+  ): Promise<Result<boolean, Auth.InvalidPassword>> {
     try {
-      const match = await bcrypt.compare(password, dbPassword);
+      const isValid = await bcrypt.compare(password, dbPassword);
 
-      return ok(match);
+      if (!isValid) return err(new Auth.InvalidPassword());
+
+      return ok(isValid);
     } catch (error) {
-      return err(new Error("Error verifying password"));
+      throw error;
     }
   }
 
   async generateAuthToken(
     payload: Token.Payload,
     expiresIn?: string
-  ): Promise<Result<{ token: string }, Error>> {
+  ): Promise<Result<{ token: string }, Token.ErrorCreating>> {
     try {
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
@@ -39,22 +40,24 @@ export class JwtAuthService implements AuthService {
 
       return ok({ token });
     } catch (error) {
-      return err(new Error("Error creating token"));
+      return err(new Token.ErrorCreating());
     }
   }
 
-  async validateAuthToken(
-    token: string
-  ): Promise<Result<JwtPayload | string, Error>> {
+  async validateAuthToken(token: string): Promise<Result<JwtPayload, Error>> {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string, {
+        complete: true,
+      });
 
       return ok(decoded);
     } catch (error) {
-      return err(new Error("Invalid token"));
+      return err(error as Error);
     }
   }
 
+  // TODO: granural access control
+  // NOT used at the moment
   async authorise(
     token: string,
     payload: Token.Payload
@@ -62,7 +65,7 @@ export class JwtAuthService implements AuthService {
     const response = await this.validateAuthToken(token);
 
     if (response.kind === "error") {
-      return response;
+      return err(response.error);
     }
 
     // TODO: ??

@@ -2,12 +2,10 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import { Route } from "@/Routes";
-import { UserServiceType } from "../service/UserService";
-import { ErrorHandler } from "@/error";
+import { UserService } from "../service/UserService";
 
 type UserRouteServices = {
-  userService: UserServiceType;
-  errorHandler: ErrorHandler;
+  userService: UserService;
 };
 
 const idSchema = z.coerce.number();
@@ -27,7 +25,7 @@ const registerUserSchema = baseUserSchema.omit({ id: true });
 export const registerUser: Route<UserRouteServices> = async (
   req,
   res,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { name, email, password } = registerUserSchema.parse(req.body);
@@ -38,13 +36,9 @@ export const registerUser: Route<UserRouteServices> = async (
       password,
     });
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
     return res.json({ user: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };
 
@@ -53,20 +47,16 @@ const loginUserSchema = baseUserSchema.pick({ email: true, password: true });
 export const loginUser: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { email, password } = loginUserSchema.parse(req.body);
 
     const response = await userService.login(email, password);
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
     return res.json({ token: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };
 
@@ -75,20 +65,16 @@ const findByIdSchema = baseUserSchema.pick({ id: true });
 export const findUserById: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { id } = findByIdSchema.parse(req.params);
 
     const response = await userService.findById(Number(id));
 
-    if (response === null) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
     return res.json({ user: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };
 
@@ -97,20 +83,16 @@ const findByEmailSchema = baseUserSchema.pick({ email: true });
 export const findUserByEmail: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ) => {
   try {
     const { email } = findByEmailSchema.parse(req.params);
 
     const response = await userService.findByEmail(email);
 
-    if (response === null) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
     return res.json({ user: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };
 
@@ -120,26 +102,21 @@ const updateUserBodySchema = baseUserSchema.omit({ id: true }).partial();
 export const updateUser: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { id } = updateUserParamsSchema.parse(req.params);
     const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-    const response = await userService.update({
-      id,
+    const response = await userService.update(id, {
       name,
       email,
       password,
     });
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
     return res.json({ user: response });
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };
 
@@ -148,19 +125,15 @@ const deleteUserSchema = baseUserSchema.pick({ id: true });
 export const deleteUser: Route<UserRouteServices> = async (
   req: Request,
   res: Response,
-  { userService, errorHandler }
+  { userService }
 ): Promise<Response> => {
   try {
     const { id } = deleteUserSchema.parse(req.params);
 
-    const response = await userService.delete(id);
+    await userService.delete(id);
 
-    if (response instanceof Error) {
-      return errorHandler.handleError(response, res);
-    }
-
-    return res.json({ user: response });
+    return res.send(204);
   } catch (error) {
-    return errorHandler.handleError(error as Error, res);
+    throw error;
   }
 };

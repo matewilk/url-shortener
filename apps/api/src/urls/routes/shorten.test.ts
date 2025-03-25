@@ -1,26 +1,14 @@
-import { test, describe, beforeAll, expect, vi } from "vitest";
+import { test, describe, expect, vi } from "vitest";
 import { Request, Response } from "express";
 
 import { shorten } from "./shorten";
-import { ErrorHandler } from "../../error";
 
 const mockedUrlShorteningService = {
   shorten: vi.fn(),
   expand: async () => ({ kind: "success" as const, value: "_" }),
 };
 
-const mockedLogger = {
-  error: vi.fn(),
-  log: vi.fn(),
-  info: vi.fn(),
-};
-
 describe("shortenUrlRoute", () => {
-  let errorHandler: ErrorHandler;
-  beforeAll(() => {
-    errorHandler = new ErrorHandler(mockedLogger);
-  });
-
   test("returns a shortened url", async () => {
     mockedUrlShorteningService.shorten.mockResolvedValue("shortUrl");
     const req: Partial<Request> = {
@@ -30,7 +18,6 @@ describe("shortenUrlRoute", () => {
 
     await shorten(req as Request, res as Response, {
       urlService: mockedUrlShorteningService,
-      errorHandler,
     });
 
     expect(res.json).toHaveBeenCalledWith({ shortUrl: "shortUrl" });
@@ -45,13 +32,14 @@ describe("shortenUrlRoute", () => {
 
     await shorten(req as Request, res as Response, {
       urlService: mockedUrlShorteningService,
-      errorHandler,
     });
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid input parameters",
-    });
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: "Invalid input parameters",
+      })
+    );
   });
 
   test("returns 400 on invalid post body", async () => {
@@ -63,12 +51,13 @@ describe("shortenUrlRoute", () => {
 
     await shorten(req as Request, res as Response, {
       urlService: mockedUrlShorteningService,
-      errorHandler,
     });
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid input parameters",
-    });
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: "Invalid input parameters",
+      })
+    );
   });
 });

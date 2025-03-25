@@ -1,6 +1,5 @@
 import { Result, ok, err } from "@/Result";
 import { ShortenedUrl, UrlRepository } from "./UrlRepository";
-import { toError } from "@/error";
 
 export class InMemoryUrlRepository implements UrlRepository {
   private store: Record<number, ShortenedUrl> = {};
@@ -22,17 +21,21 @@ export class InMemoryUrlRepository implements UrlRepository {
 
       return ok(record);
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 
   findById = async (
     id: number
-  ): Promise<Result<ShortenedUrl | null, Error>> => {
+  ): Promise<Result<ShortenedUrl, ShortenedUrl.NotFound>> => {
     try {
-      return ok(this.store[id] ?? null);
+      const result = this.store[id];
+
+      if (!result) return err(new ShortenedUrl.NotFound());
+
+      return ok(result);
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 
@@ -46,7 +49,7 @@ export class InMemoryUrlRepository implements UrlRepository {
 
       return ok(Object.keys(this.store).length + 1);
     } catch (error) {
-      return err(toError(error));
+      throw error;
     }
   };
 }

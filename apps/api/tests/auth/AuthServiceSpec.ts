@@ -50,20 +50,14 @@ export namespace AuthServiceSpec {
           fc.asyncProperty(
             fc.string({ minLength: 8, maxLength: 256 }),
             async (password) => {
-              const hashResponse = await auth.hashPassword(password);
+              const hashedPassword = await auth.hashPassword(password);
 
-              if (hashResponse.kind === "error") {
-                throw hashResponse.error;
-              }
-
-              const verifyResponse = await auth.verifyPassword(
+              const verified = await auth.verifyPassword(
                 password,
-                hashResponse.value
+                hashedPassword
               );
 
-              expect(
-                verifyResponse.kind === "success" && verifyResponse.value
-              ).toEqual(true);
+              expect(verified).toEqual({ kind: "success", value: true });
             }
           ),
           { interruptAfterTimeLimit: 1500 }

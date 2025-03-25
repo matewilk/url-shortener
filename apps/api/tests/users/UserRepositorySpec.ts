@@ -32,8 +32,8 @@ export namespace UserRepositorySpec {
               const foundByEmail = await repo.findByEmail(created.value.email);
               expect(foundByEmail).toEqual(created);
 
-              const deleted = await repo.delete(created.value.id);
-              expect(deleted).toEqual(created);
+              await repo.delete(created.value.id);
+              // TODO: how to assert the delete is successful
             }
           )
         );

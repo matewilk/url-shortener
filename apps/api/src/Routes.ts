@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-import { JwtAuthService } from "./auth/service/JwtAuthService";
+import { AuthService } from "./auth/service/AuthService";
 
 export interface Route<Services extends Record<string, unknown>> {
   (req: Request, res: Response, services: Services): Promise<Response>;
@@ -11,26 +11,34 @@ export const withServices =
     route: Route<Services>,
     services: Services
   ) =>
-  (req: Request, res: Response) =>
-    route(req, res, services);
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await route(req, res, services);
+    } catch (error) {
+      next(error);
+    }
+  };
 
-// TODO: should auth service be injected into the component?
 export const withAuth =
   <Services extends Record<string, unknown>>(
     route: Route<Services>,
+    authService: AuthService,
     services: Services
   ) =>
-  (req: Request, res: Response) => {
-    const authService = new JwtAuthService();
-    const token = req.headers.authorization?.split(" ")[1];
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+      if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
 
-    const user = authService.validateAuthToken(token);
-    if (user instanceof Error) {
-      return res.status(401).json({ error: user.message });
+      const result = await authService.validateAuthToken(token);
+      if (result.kind === "error") {
+        return res.status(401).json({ error: result.error.message });
+      }
+      await route(req, res, { ...services, user: result.value });
+    } catch (error) {
+      next(error);
     }
-    return route(req, res, { ...services, user });
   };
