@@ -59,6 +59,7 @@ export namespace UserServiceSpec {
 
                 const deleted = await userService.delete(created.id);
                 expect(deleted).toEqual(updated);
+                // if you can't find the user, it's deleted, easy
               }
             }
           ),

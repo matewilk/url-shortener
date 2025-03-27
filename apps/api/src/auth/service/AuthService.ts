@@ -10,10 +10,10 @@ export interface AuthService {
     payload: Token.Payload,
     expiresIn?: string
   ) => Promise<Result<Token.Draft, Token.ErrorCreating>>;
-  validateAuthToken: (
+  parseAuthToken: (
     token: string
     // TODO: ok to use Record<string, unknown> here instead of JwtPayload?
-  ) => Promise<Result<Record<string, unknown>, Error>>;
+  ) => Promise<Result<Record<string, unknown>, Token.Invalid | Token.Expired>>;
   authorise: (
     token: string,
     payload: Token.Payload
@@ -34,6 +34,12 @@ export namespace Token {
   // TODO: what about simply token: string for e.g. validateAuthToken?
   export type Draft = { token: string };
   export class ErrorCreating extends Error {
-    tag: "ErrorCreating" = "ErrorCreating";
+    tag: "ErrorCreatingToken" = "ErrorCreatingToken";
+  }
+  export class Invalid extends Error {
+    tag: "InvalidToken" = "InvalidToken";
+  }
+  export class Expired extends Error {
+    tag: "ExpiredToken" = "ExpiredToken";
   }
 }

@@ -59,6 +59,24 @@ npm run dev
 - `ci.yml` builds and tests the project.
 - `playwright.yml` runs end-to-end tests using Playwright.
 
+#### Local debugging:
+
+Running the project from the main package.json file allows you to debug the backend and frontend in VSCode.
+
+Run the main `dev` script in JavaScript Debug Terminal to enable breakpoints. This will start the `turbo run dev` script, which runs the backend and frontend concurrently.
+
+You can set breakpoints and inspect variables.
+
+- **Backend:**
+
+  - works seemlessly with `turbo run dev` and `npm run dev` commands.
+
+- **Frontend:**
+  - to allow breakpoints for Next.js under current setup
+    - the `--inspect` flag is added to the `dev` script in the `apps/front/package.json` file.
+    - the vscode `launch.json `file is configured to attach to the Next.js process.
+  - the `launch.json` file is located in the `.vscode` folder and it has to be manually launched from the debug tab in VSCode after the `dev` script is started.
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request.

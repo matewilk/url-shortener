@@ -48,7 +48,11 @@ export const SubmitUrlForm = () => {
         </div>
         {state.kind === "success" && (
           // TODO: get host from env?
-          <UrlBox host={window.location.host} url={state.value.message} />
+          <UrlBox
+            host={window.location.host}
+            path={"expand"}
+            shortUrl={state.value.message}
+          />
         )}
         {state.kind === "error" && (
           <ErrorMessage message={state.error.message} />

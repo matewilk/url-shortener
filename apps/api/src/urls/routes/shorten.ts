@@ -22,9 +22,9 @@ export const shorten: Route<ShortenUrlRouteServices> = async (
 
     const { url } = body;
 
-    const result = await urlService.shorten(url);
+    const shortUrl = await urlService.shorten(url);
 
-    return res.json({ shortUrl: result });
+    return res.json({ shortUrl: shortUrl.hash });
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).json({

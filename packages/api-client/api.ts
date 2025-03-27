@@ -38,9 +38,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            shortUrl: components["schemas"]["ShortUrl"];
-                        };
+                        "application/json": components["schemas"]["ShortUrl"];
                     };
                 };
                 /** @description Bad request */

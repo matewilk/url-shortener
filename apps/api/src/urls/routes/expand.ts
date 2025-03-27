@@ -27,7 +27,11 @@ export const expand: Route<ExpandUrlRouteServices> = async (
 
     const response = await urlService.expand(shortUrl);
 
-    return res.json({ url: response });
+    if (response.kind === "error") {
+      throw response.error;
+    }
+
+    return res.json({ url: response.value });
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).json({
