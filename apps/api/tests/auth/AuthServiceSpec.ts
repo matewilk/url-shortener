@@ -21,7 +21,7 @@ export namespace AuthServiceSpec {
                 throw tokenResponse.error;
               }
 
-              const validateResponse = await auth.validateAuthToken(
+              const validateResponse = await auth.parseAuthToken(
                 tokenResponse.value.token
               );
 

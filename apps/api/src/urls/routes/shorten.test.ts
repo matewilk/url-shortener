@@ -3,21 +3,23 @@ import { Request, Response } from "express";
 
 import { shorten } from "./shorten";
 
-const mockedUrlShorteningService = {
+const mockedUrlService = {
   shorten: vi.fn(),
   expand: async () => ({ kind: "success" as const, value: "_" }),
 };
 
 describe("shortenUrlRoute", () => {
   test("returns a shortened url", async () => {
-    mockedUrlShorteningService.shorten.mockResolvedValue("shortUrl");
+    mockedUrlService.shorten.mockResolvedValue({
+      hash: "shortUrl",
+    });
     const req: Partial<Request> = {
       body: { url: "https://example.com" },
     };
     const res: Partial<Response> = { json: vi.fn() };
 
     await shorten(req as Request, res as Response, {
-      urlService: mockedUrlShorteningService,
+      urlService: mockedUrlService,
     });
 
     expect(res.json).toHaveBeenCalledWith({ shortUrl: "shortUrl" });
@@ -31,7 +33,7 @@ describe("shortenUrlRoute", () => {
     };
 
     await shorten(req as Request, res as Response, {
-      urlService: mockedUrlShorteningService,
+      urlService: mockedUrlService,
     });
 
     expect(res.status).toHaveBeenCalledWith(400);
@@ -50,7 +52,7 @@ describe("shortenUrlRoute", () => {
     };
 
     await shorten(req as Request, res as Response, {
-      urlService: mockedUrlShorteningService,
+      urlService: mockedUrlService,
     });
 
     expect(res.status).toHaveBeenCalledWith(400);

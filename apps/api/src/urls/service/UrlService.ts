@@ -16,13 +16,13 @@ export class UrlService implements UrlServiceType {
     const id = Number(nextId);
     const hash = this.hash.encode(id);
 
-    const shortUrl = await this.repo.create({
+    const shortenedUrl = await this.repo.create({
       id,
       url,
       hash,
     });
 
-    return shortUrl;
+    return shortenedUrl;
   }
 
   async expand(hash: string): Promise<Result<string, Error>> {

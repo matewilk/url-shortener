@@ -43,7 +43,9 @@ describe("Submit Url Form", () => {
 
     const urlBox = screen.getByLabelText("Url box");
 
-    expect(urlBox.getAttribute("value")).toBe("localhost:3000/encodedurl");
+    expect(urlBox.getAttribute("value")).toBe(
+      "localhost:3000/expand/encodedurl"
+    );
 
     // TODO: Fix this
     // expect(input.value).toBe("");
