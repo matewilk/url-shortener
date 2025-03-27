@@ -1,5 +1,9 @@
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, {
+  JwtPayload,
+  JsonWebTokenError,
+  TokenExpiredError,
+} from "jsonwebtoken";
 
 import { Result, ok, err } from "@/Result";
 import { AuthService, Token, Auth } from "./AuthService";
@@ -44,7 +48,9 @@ export class JwtAuthService implements AuthService {
     }
   }
 
-  async validateAuthToken(token: string): Promise<Result<JwtPayload, Error>> {
+  async parseAuthToken(
+    token: string
+  ): Promise<Result<JwtPayload, Token.Invalid | Token.Expired>> {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string, {
         complete: true,
@@ -52,7 +58,13 @@ export class JwtAuthService implements AuthService {
 
       return ok(decoded);
     } catch (error) {
-      return err(error as Error);
+      if (error instanceof TokenExpiredError) {
+        return err(new Token.Expired());
+      } else if (error instanceof JsonWebTokenError) {
+        return err(new Token.Invalid());
+      } else {
+        throw err(error);
+      }
     }
   }
 
@@ -62,7 +74,7 @@ export class JwtAuthService implements AuthService {
     token: string,
     payload: Token.Payload
   ): Promise<Result<boolean, Error>> {
-    const response = await this.validateAuthToken(token);
+    const response = await this.parseAuthToken(token);
 
     if (response.kind === "error") {
       return err(response.error);

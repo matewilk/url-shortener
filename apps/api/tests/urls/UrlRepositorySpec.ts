@@ -22,19 +22,15 @@ export namespace UrlRepositorySpec {
             async (urlDrafts) => {
               for (const draft of urlDrafts) {
                 const draftWithId = { ...draft };
-                const created = await repo.create(draftWithId);
+                const shortenedUrl = await repo.create(draftWithId);
 
-                if (created.kind === "error") {
-                  throw created.error;
-                }
-
-                const found = await repo.findById(created.value.id);
+                const found = await repo.findById(shortenedUrl.id);
 
                 if (found.kind === "error") {
                   throw found.error;
                 }
 
-                expect(found.value).toEqual(created.value);
+                expect(found.value).toEqual(shortenedUrl);
               }
             }
           ),

@@ -19,13 +19,9 @@ describe("Url Service", () => {
   test("shorten and expand url", async () => {
     await fc.assert(
       fc.asyncProperty(fc.webUrl(), async (url) => {
-        const response = await urlService.shorten(url);
+        const shortUrl = await urlService.shorten(url);
 
-        if (response.kind === "error") {
-          throw response.error;
-        }
-
-        const expandedUrl = await urlService.expand(response.value);
+        const expandedUrl = await urlService.expand(shortUrl.hash);
 
         if (expandedUrl.kind === "error") {
           throw expandedUrl.error;

@@ -4,9 +4,7 @@ import { ShortenedUrl, UrlRepository } from "./UrlRepository";
 export class InMemoryUrlRepository implements UrlRepository {
   private store: Record<number, ShortenedUrl> = {};
 
-  create = async (
-    draft: ShortenedUrl.Draft
-  ): Promise<Result<ShortenedUrl, Error>> => {
+  create = async (draft: ShortenedUrl.Draft): Promise<ShortenedUrl> => {
     try {
       const record = {
         ...draft,
@@ -14,12 +12,12 @@ export class InMemoryUrlRepository implements UrlRepository {
       };
 
       if (this.store[record.id]) {
-        return err(new Error("Record already exists"));
+        throw new Error("Record already exists");
       }
 
       this.store[record.id] = record;
 
-      return ok(record);
+      return record;
     } catch (error) {
       throw error;
     }
@@ -39,15 +37,15 @@ export class InMemoryUrlRepository implements UrlRepository {
     }
   };
 
-  getNextId = async (): Promise<Result<number, Error>> => {
+  getNextId = async (): Promise<number> => {
     try {
       const nextId = Object.keys(this.store).length + 1;
 
       if (isNaN(nextId)) {
-        return err(new Error("Failed to generate next ID"));
+        throw new Error("Failed to generate next ID");
       }
 
-      return ok(Object.keys(this.store).length + 1);
+      return Object.keys(this.store).length + 1;
     } catch (error) {
       throw error;
     }

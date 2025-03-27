@@ -33,11 +33,15 @@ export const withAuth =
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      const result = await authService.validateAuthToken(token);
+      const result = await authService.parseAuthToken(token);
       if (result.kind === "error") {
-        return res.status(401).json({ error: result.error.message });
+        if (result.error.tag === "ExpiredToken") {
+          return res.status(401).json({ error: "Token Expired" });
+        }
+        return res.status(401).json({ error: "Token Invalid" });
+      } else {
+        await route(req, res, { ...services, user: result.value });
       }
-      await route(req, res, { ...services, user: result.value });
     } catch (error) {
       next(error);
     }
