@@ -2,7 +2,7 @@ import { expect, describe, test, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { useActionState } from "react";
 
-import { SubmitUrlForm } from "@/urls/components/submitUrlForm/SubmitUrlForm";
+import { SubmitUrlForm } from "@/capabilities/urls/components/submitUrlForm/SubmitUrlForm";
 
 vi.mock("react", async () => {
   const actual = await vi.importActual("react");

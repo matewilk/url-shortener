@@ -1,10 +1,12 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
-import { submitUrlAction, Init } from "@/urls/actions/submitUrlAction";
+import {
+  submitUrlAction,
+  Init,
+} from "@/capabilities/urls/actions/submitUrlAction";
 import { UrlBox } from "./UrlBox";
 import { ErrorMessage } from "./ErrorBox";
-import { useEffect, useRef } from "react";
 import { SpinnerButton } from "@/ui/SpinnerButton";
 
 const initialState: Init = {
