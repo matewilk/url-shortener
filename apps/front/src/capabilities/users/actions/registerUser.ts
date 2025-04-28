@@ -1,35 +1,18 @@
-"use server";
+import { Capabilities } from "@/capabilities/Capabilities";
+import { RemoteResult } from "@/prelude/RemoteResult";
+
 import { userSchema } from "../User";
 
-import { client } from "@shortify/api-client/client";
-const apiClient = client("http://localhost:3001");
-
-interface OK<V> {
-  kind: "success";
-  value: V;
-}
-
-interface Err<E> {
-  kind: "error";
-  error: E;
-}
-
-export interface Init {
-  kind: "init";
-}
-
-// TODO: Result type again
-type Result<T, E> = Init | OK<T> | Err<E>;
-
 interface RegisterUserAction {
-  (prevState: unknown, formData: FormData): Promise<
-    Result<{ message: string }, { message: string }>
+  (prevState: unknown, formData: FormData, capabilities: Capabilities): Promise<
+    RemoteResult<{ message: string }, { message: string }>
   >;
 }
 
 export const registerUser: RegisterUserAction = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
+  capabilities: Capabilities
 ) => {
   try {
     userSchema.refine(
@@ -48,7 +31,7 @@ export const registerUser: RegisterUserAction = async (
       confirmPassword: formData.get("confirmPassword"),
     });
 
-    const { data, error } = await apiClient.POST("/users", {
+    const { data, error } = await capabilities.apiClient.POST("/users", {
       body: {
         name,
         email,

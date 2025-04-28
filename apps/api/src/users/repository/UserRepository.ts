@@ -1,4 +1,5 @@
-import { Result } from "@/Result";
+import { Result } from "@/prelude/Result";
+import type { User } from "@/users/User";
 
 export interface UserRepository {
   create: (user: User.Draft) => Promise<Result<User.Return, User.AlreadyExist>>;
@@ -13,24 +14,4 @@ export interface UserRepository {
   ) => Promise<Result<User, User.UpdateError>>;
 
   delete: (id: number) => Promise<void>;
-}
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-};
-
-export namespace User {
-  export type Draft = Omit<User, "id">;
-  export type Patch = Partial<Draft>;
-  export type Return = Omit<User, "password">; // | "email"
-  export class NotFound extends Error {
-    tag: "UserNotFound" = "UserNotFound";
-  }
-  export class AlreadyExist extends Error {
-    tag: "UserAlreadyExist" = "UserAlreadyExist";
-  }
-  export type UpdateError = NotFound | AlreadyExist;
 }

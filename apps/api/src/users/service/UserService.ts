@@ -1,7 +1,7 @@
-import { Result } from "@/Result";
+import { Result } from "@/prelude/Result";
 
+import { User } from "@/users/User";
 import { Token } from "../../auth/service/AuthService";
-import { User } from "../repository/UserRepository";
 
 export interface UserService {
   register: (user: User.Draft) => Promise<Result<User.Return, Error>>;

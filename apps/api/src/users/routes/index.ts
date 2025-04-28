@@ -1,24 +1,12 @@
 import { Request, Response } from "express";
-import { z } from "zod";
 
 import { Route } from "@/Routes";
 import { UserService } from "../service/UserService";
+import { baseUserSchema } from "@/users//User";
 
 type UserRouteServices = {
   userService: UserService;
 };
-
-const idSchema = z.coerce.number();
-const nameSchema = z.string().min(3);
-const emailSchema = z.string().email();
-const passwordSchema = z.string().min(8);
-
-const baseUserSchema = z.object({
-  id: idSchema,
-  name: nameSchema,
-  email: emailSchema,
-  password: passwordSchema,
-});
 
 const registerUserSchema = baseUserSchema.omit({ id: true });
 

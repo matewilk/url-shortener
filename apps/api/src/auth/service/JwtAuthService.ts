@@ -5,7 +5,7 @@ import jwt, {
   TokenExpiredError,
 } from "jsonwebtoken";
 
-import { Result, ok, err } from "@/Result";
+import { Result, ok, err } from "@/prelude/Result";
 import { AuthService, Token, Auth } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
