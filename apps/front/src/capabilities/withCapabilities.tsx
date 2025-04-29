@@ -12,23 +12,23 @@ interface NextRequest<Params> {
 }
 
 export const withCapabilities =
-  <Params extends object>(
+  <Params extends Record<string, string>>(
     handler: (req: NextRequest<Params>) => Promise<JSX.Element>
   ) =>
   async ({
     params,
     searchParams,
   }: {
-    params: Params;
-    searchParams: SearchParams;
+    params: Promise<Params>;
+    searchParams: Promise<SearchParams>;
   }) => {
     const capabilities = {
       apiClient: apiClient,
     };
 
     const req = {
-      params,
-      searchParams,
+      params: await params,
+      searchParams: await searchParams,
       capabilities,
     };
 
