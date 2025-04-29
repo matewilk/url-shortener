@@ -2,32 +2,16 @@
 import { z } from "zod";
 
 import { client } from "@shortify/api-client/client";
+import { RemoteResult } from "@/prelude/RemoteResult";
 const apiClient = client("http://localhost:3001");
-
-interface OK<V> {
-  kind: "success";
-  value: V;
-}
-
-interface Err<E> {
-  kind: "error";
-  error: E;
-}
-
-export interface Init {
-  kind: "init";
-}
-
-// TODO: Result type again
-type Result<T, E> = Init | OK<T> | Err<E>;
 
 interface SubmitUrlAction {
   (prevState: unknown, formData: FormData): Promise<
-    Result<{ message: string }, { message: string }>
+    RemoteResult<{ message: string }, { message: string }>
   >;
 }
 
-export const submitUrlAction: SubmitUrlAction = async (
+export const submitUrl: SubmitUrlAction = async (
   prevState: unknown,
   formData: FormData
 ) => {

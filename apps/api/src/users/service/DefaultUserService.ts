@@ -1,7 +1,8 @@
-import { Result, ok, err } from "@/Result";
+import { Result, ok, err } from "@/prelude/Result";
 
 import { AuthService, Token } from "../../auth/service/AuthService";
-import { User, UserRepository } from "../repository/UserRepository";
+import { UserRepository } from "../repository/UserRepository";
+import { User } from "@/users/User";
 import { UserService } from "./UserService";
 
 export class DefaultUserService implements UserService {

@@ -1,4 +1,4 @@
-import { Result, ok, err } from "@/Result";
+import { Result, ok, err } from "@/prelude/Result";
 import { Hash } from "./Hash";
 import { ShortenedUrl, UrlRepository } from "../repository/UrlRepository";
 

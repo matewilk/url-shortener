@@ -1,4 +1,4 @@
-import { Result } from "@/Result";
+import { Result } from "@/prelude/Result";
 
 export interface AuthService {
   hashPassword: (password: string) => Promise<string>;

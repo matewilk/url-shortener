@@ -1,7 +1,8 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 
-import { Result, ok, err } from "@/Result";
-import { User, UserRepository } from "./UserRepository";
+import { Result, ok, err } from "@/prelude/Result";
+import { User } from "@/users/User";
+import { UserRepository } from "./UserRepository";
 import { PrismaError } from "@/error";
 
 export class DbUserRepository implements UserRepository {

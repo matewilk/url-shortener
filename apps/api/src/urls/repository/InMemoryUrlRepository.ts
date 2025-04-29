@@ -1,4 +1,4 @@
-import { Result, ok, err } from "@/Result";
+import { Result, ok, err } from "@/prelude/Result";
 import { ShortenedUrl, UrlRepository } from "./UrlRepository";
 
 export class InMemoryUrlRepository implements UrlRepository {

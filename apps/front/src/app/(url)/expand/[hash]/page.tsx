@@ -1,16 +1,21 @@
-import { client } from "@shortify/api-client/client";
 import { redirect } from "next/navigation";
 
-const apiClient = client("http://localhost:3001");
+import { withCapabilities } from "@/capabilities/withCapabilities";
+import { Capabilities } from "@/capabilities/Capabilities";
 
-type Params = Promise<{
+type Params = {
   hash: string;
-}>;
+};
 
-export default async function Page(props: { params: Params }) {
-  const { hash } = await props.params;
+type PageProps = {
+  params: Params;
+  capabilities: Capabilities;
+};
 
-  const { data, error } = await apiClient.GET(`/{shortUrl}`, {
+export default withCapabilities(async ({ params, capabilities }: PageProps) => {
+  const { hash } = params;
+
+  const { data, error } = await capabilities.apiClient.GET(`/{shortUrl}`, {
     params: { path: { shortUrl: hash } },
   });
 
@@ -26,4 +31,4 @@ export default async function Page(props: { params: Params }) {
       </div>
     </div>
   );
-}
+});

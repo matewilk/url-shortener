@@ -1,4 +1,4 @@
-import { Result } from "@/Result";
+import { Result } from "@/prelude/Result";
 
 export interface UrlRepository {
   create: (url: ShortenedUrl.Draft) => Promise<ShortenedUrl>;
