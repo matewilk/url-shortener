@@ -8,12 +8,12 @@ type Params = {
 };
 
 type PageProps = {
-  params: Params;
+  params: Promise<Params>;
   capabilities: Capabilities;
 };
 
 export default withCapabilities(async ({ params, capabilities }: PageProps) => {
-  const { hash } = params;
+  const { hash } = await params;
 
   const { data, error } = await capabilities.apiClient.GET(`/{shortUrl}`, {
     params: { path: { shortUrl: hash } },

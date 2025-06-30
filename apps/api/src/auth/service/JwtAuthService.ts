@@ -36,15 +36,15 @@ export class JwtAuthService implements AuthService {
   async generateAuthToken(
     payload: Token.Payload,
     expiresIn?: string
-  ): Promise<Result<{ token: string }, Token.ErrorCreating>> {
+  ): Promise<{ token: string }> {
     try {
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: expiresIn ?? "1h",
       });
 
-      return ok({ token });
+      return { token };
     } catch (error) {
-      return err(new Token.ErrorCreating());
+      throw new Token.ErrorCreating();
     }
   }
 

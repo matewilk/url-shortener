@@ -18,13 +18,13 @@ export const registerUser: Route<UserRouteServices> = async (
   try {
     const { name, email, password } = registerUserSchema.parse(req.body);
 
-    const response = await userService.register({
+    const result = await userService.register({
       name,
       email,
       password,
     });
 
-    return res.json({ user: response });
+    return res.json(result);
   } catch (error) {
     throw error;
   }
@@ -37,15 +37,15 @@ export const loginUser: Route<UserRouteServices> = async (
   res: Response,
   { userService }
 ): Promise<Response> => {
-  try {
-    const { email, password } = loginUserSchema.parse(req.body);
+  const { email, password } = loginUserSchema.parse(req.body);
 
-    const response = await userService.login(email, password);
+  const result = await userService.login(email, password);
 
-    return res.json({ token: response });
-  } catch (error) {
-    throw error;
+  if (result.kind === "error") {
+    return res.status(401).json({ error: "Unauthorised" });
   }
+
+  return res.json(result.value);
 };
 
 const findByIdSchema = baseUserSchema.pick({ id: true });
@@ -58,9 +58,9 @@ export const findUserById: Route<UserRouteServices> = async (
   try {
     const { id } = findByIdSchema.parse(req.params);
 
-    const response = await userService.findById(Number(id));
+    const result = await userService.findById(Number(id));
 
-    return res.json({ user: response });
+    return res.json({ user: result });
   } catch (error) {
     throw error;
   }
@@ -76,9 +76,9 @@ export const findUserByEmail: Route<UserRouteServices> = async (
   try {
     const { email } = findByEmailSchema.parse(req.params);
 
-    const response = await userService.findByEmail(email);
+    const result = await userService.findByEmail(email);
 
-    return res.json({ user: response });
+    return res.json({ user: result });
   } catch (error) {
     throw error;
   }
@@ -96,13 +96,13 @@ export const updateUser: Route<UserRouteServices> = async (
     const { id } = updateUserParamsSchema.parse(req.params);
     const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-    const response = await userService.update(id, {
+    const result = await userService.update(id, {
       name,
       email,
       password,
     });
 
-    return res.json({ user: response });
+    return res.json({ user: result });
   } catch (error) {
     throw error;
   }

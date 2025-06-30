@@ -204,8 +204,8 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Bad request */
-                400: {
+                /** @description Internal server error */
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -213,24 +213,77 @@ export interface paths {
                         "application/json": {
                             /**
                              * @description Error message
-                             * @example Username and password are required
+                             * @example Internal server error
                              */
-                            message?: string;
+                            error?: string;
                         };
                     };
                 };
-                /** @description Conflict */
-                409: {
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * User login
+         * @description Authenticate a user and return a token
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /**
+                         * @description The name of the user
+                         * @example johndoe
+                         */
+                        username?: string;
+                        /**
+                         * Format: password
+                         * @description The password of the user
+                         * @example password123
+                         */
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description User logged in successfully */
+                200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
                             /**
-                             * @description Error message
-                             * @example Username or email already exists
+                             * @example success
+                             * @enum {string}
                              */
-                            message?: string;
+                            kind?: "success | error";
+                            value?: {
+                                /**
+                                 * @description JWT token
+                                 * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                                 */
+                                token?: string;
+                            };
                         };
                     };
                 };
@@ -245,7 +298,7 @@ export interface paths {
                              * @description Error message
                              * @example Internal server error
                              */
-                            message?: string;
+                            error?: string;
                         };
                     };
                 };
