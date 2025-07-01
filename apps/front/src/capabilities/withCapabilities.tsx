@@ -6,8 +6,8 @@ const apiClient = client("http://localhost:3001");
 type SearchParams = { [key: string]: string | string[] | undefined };
 
 interface NextRequest<Params> {
-  params: Params;
-  searchParams: SearchParams;
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
   capabilities: Capabilities;
 }
 
@@ -27,8 +27,8 @@ export const withCapabilities =
     };
 
     const req = {
-      params: await params,
-      searchParams: await searchParams,
+      params,
+      searchParams,
       capabilities,
     };
 

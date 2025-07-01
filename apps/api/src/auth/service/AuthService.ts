@@ -9,7 +9,7 @@ export interface AuthService {
   generateAuthToken: (
     payload: Token.Payload,
     expiresIn?: string
-  ) => Promise<Result<Token.Draft, Token.ErrorCreating>>;
+  ) => Promise<Token.Draft>;
   parseAuthToken: (
     token: string
     // TODO: ok to use Record<string, unknown> here instead of JwtPayload?

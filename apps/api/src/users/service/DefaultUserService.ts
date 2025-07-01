@@ -1,6 +1,6 @@
 import { Result, ok, err } from "@/prelude/Result";
 
-import { AuthService, Token } from "../../auth/service/AuthService";
+import { Auth, AuthService, Token } from "../../auth/service/AuthService";
 import { UserRepository } from "../repository/UserRepository";
 import { User } from "@/users/User";
 import { UserService } from "./UserService";
@@ -29,7 +29,7 @@ export class DefaultUserService implements UserService {
   async login(
     email: string,
     password: string
-  ): Promise<Result<Token.Draft, Error>> {
+  ): Promise<Result<Token.Draft, User.NotFound | Auth.InvalidPassword>> {
     const user = await this.repo.findByEmail(email);
 
     if (user.kind === "error") {
@@ -46,13 +46,9 @@ export class DefaultUserService implements UserService {
     }
 
     const { name } = user.value;
-    const tokenResponse = await this.auth.generateAuthToken({ name });
+    const token = await this.auth.generateAuthToken({ name });
 
-    if (tokenResponse.kind === "error") {
-      return err(tokenResponse.error);
-    }
-
-    return ok(tokenResponse.value);
+    return ok(token);
   }
 
   async findById(id: number): Promise<Result<User, Error>> {

@@ -17,12 +17,8 @@ export namespace AuthServiceSpec {
             async (payload) => {
               const tokenResponse = await auth.generateAuthToken(payload);
 
-              if (tokenResponse.kind === "error") {
-                throw tokenResponse.error;
-              }
-
               const validateResponse = await auth.parseAuthToken(
-                tokenResponse.value.token
+                tokenResponse.token
               );
 
               if (validateResponse.kind === "error") {
@@ -35,7 +31,7 @@ export namespace AuthServiceSpec {
                 "username" in validateResponse.value
               ) {
                 const authorised = await auth.authorise(
-                  tokenResponse.value.token,
+                  tokenResponse.token,
                   payload
                 );
                 expect(authorised).toEqual(true);

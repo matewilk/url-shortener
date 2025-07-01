@@ -1,7 +1,7 @@
 import { Result } from "@/prelude/Result";
 
 import { User } from "@/users/User";
-import { Token } from "../../auth/service/AuthService";
+import { Auth, Token } from "../../auth/service/AuthService";
 
 export interface UserService {
   register: (user: User.Draft) => Promise<Result<User.Return, Error>>;
@@ -9,7 +9,7 @@ export interface UserService {
   login: (
     email: string,
     password: string
-  ) => Promise<Result<Token.Draft, Error>>;
+  ) => Promise<Result<Token.Draft, User.NotFound | Auth.InvalidPassword>>;
 
   findById: (id: number) => Promise<Result<User, Error>>;
 
