@@ -1,4 +1,4 @@
-import { Result, ok, err } from "@/prelude/Result";
+import { Result, ok, err, match, matchErrorTag } from "@/prelude/Result";
 
 import { Auth, AuthService, Token } from "../../auth/service/AuthService";
 import { UserRepository } from "../repository/UserRepository";
@@ -21,9 +21,13 @@ export class DefaultUserService implements UserService {
       password: hashedPassword,
     });
 
-    return response.kind === "success"
-      ? ok(response.value)
-      : err(response.error);
+    return match(response, {
+      onOk: (value) => ok(value),
+      onErr: (error) =>
+        matchErrorTag(error, {
+          UserAlreadyExists: (error) => error.tag,
+        }),
+    });
   }
 
   async login(
@@ -55,9 +59,13 @@ export class DefaultUserService implements UserService {
     try {
       const response = await this.repo.findById(id);
 
-      return response.kind === "success"
-        ? ok(response.value)
-        : err(response.error);
+      return match(response, {
+        onOk: (value) => ok(value),
+        onErr: (error) =>
+          matchErrorTag(error, {
+            NotFound: (error) => error.tag,
+          }),
+      });
     } catch (error) {
       throw error;
     }
@@ -67,9 +75,13 @@ export class DefaultUserService implements UserService {
     try {
       const response = await this.repo.findByEmail(email);
 
-      return response.kind === "success"
-        ? ok(response.value)
-        : err(response.error);
+      return match(response, {
+        onOk: (value) => ok(value),
+        onErr: (error) =>
+          matchErrorTag(error, {
+            NotFound: (error) => error.tag,
+          }),
+      });
     } catch (error) {
       throw error;
     }
@@ -81,9 +93,10 @@ export class DefaultUserService implements UserService {
   ): Promise<Result<User, Error>> {
     const response = await this.repo.update(id, { name, email, password });
 
-    return response.kind === "success"
-      ? ok(response.value)
-      : err(response.error);
+    return match(response, {
+      onOk: (value) => ok(value),
+      onErr: (error) => err(error),
+    });
   }
 
   async delete(id: number): Promise<void> {

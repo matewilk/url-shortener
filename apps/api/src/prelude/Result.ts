@@ -19,3 +19,33 @@ export const err = <T, E>(error: E): Result<T, E> => ({
   kind: "error",
   error,
 });
+
+type Cases<T, E, A> = {
+  onOk: (result: T) => A;
+  onErr: (error: E) => A;
+};
+
+export const match = <T, E, A>(result: Result<T, E>, cases: Cases<T, E, A>) => {
+  if (result.kind === "success") {
+    return cases.onOk(result.value);
+  } else {
+    return cases.onErr(result.error);
+  }
+};
+
+export const taggedError = <Tag extends string>(tag: Tag) =>
+  class extends Error {
+    tag: Tag = tag;
+  };
+
+type TagCases<E extends { tag: string }, A> = {
+  [K in E["tag"]]: (value: Extract<E, { tag: K }>) => A;
+};
+
+export const matchErrorTag = <E extends { tag: string }, A>(
+  value: E,
+  cases: TagCases<E, A>
+) => {
+  // @ts-expect-error
+  return cases[cases.tag](value);
+};

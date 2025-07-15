@@ -10,7 +10,7 @@ export class DbUserRepository implements UserRepository {
 
   async create(
     user: User.Draft
-  ): Promise<Result<User.Return, User.AlreadyExist>> {
+  ): Promise<Result<User.Return, User.AlreadyExists>> {
     try {
       const record = await this.db.user.create({
         data: {
@@ -26,7 +26,7 @@ export class DbUserRepository implements UserRepository {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         PrismaError.isUniqueConstraintError(error)
       ) {
-        return err(new User.AlreadyExist());
+        return err(new User.AlreadyExists());
       }
       throw error;
     }
@@ -76,7 +76,7 @@ export class DbUserRepository implements UserRepository {
         }
 
         if (PrismaError.isUniqueConstraintError(error)) {
-          return err(new User.AlreadyExist());
+          return err(new User.AlreadyExists());
         }
       }
       throw error;
