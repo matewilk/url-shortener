@@ -1,4 +1,4 @@
-import { Result } from "@/prelude/Result";
+import { Result, taggedError } from "@/prelude/Result";
 
 export interface UrlRepository {
   create: (url: ShortenedUrl.Draft) => Promise<ShortenedUrl>;
@@ -19,7 +19,5 @@ export type ShortenedUrl = {
 
 export namespace ShortenedUrl {
   export type Draft = Omit<ShortenedUrl, "createdAt">;
-  export class NotFound extends Error {
-    tag: "UrlNotFound" = "UrlNotFound";
-  }
+  export class NotFound extends taggedError("UrlNotFound") {}
 }

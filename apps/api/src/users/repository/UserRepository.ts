@@ -2,7 +2,9 @@ import { Result } from "@/prelude/Result";
 import type { User } from "@/users/User";
 
 export interface UserRepository {
-  create: (user: User.Draft) => Promise<Result<User.Return, User.AlreadyExist>>;
+  create: (
+    user: User.Draft
+  ) => Promise<Result<User.Return, User.AlreadyExists>>;
 
   findById: (id: number) => Promise<Result<User, User.NotFound>>;
 

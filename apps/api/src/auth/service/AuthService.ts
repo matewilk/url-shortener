@@ -1,4 +1,4 @@
-import { Result } from "@/prelude/Result";
+import { Result, taggedError } from "@/prelude/Result";
 
 export interface AuthService {
   hashPassword: (password: string) => Promise<string>;
@@ -21,9 +21,7 @@ export interface AuthService {
 }
 
 export namespace Auth {
-  export class InvalidPassword extends Error {
-    tag: "InvalidPasswrod" = "InvalidPasswrod";
-  }
+  export class InvalidPassword extends taggedError("InvalidPassord") {}
 }
 
 export namespace Token {
@@ -33,13 +31,7 @@ export namespace Token {
   };
   // TODO: what about simply token: string for e.g. validateAuthToken?
   export type Draft = { token: string };
-  export class ErrorCreating extends Error {
-    tag: "ErrorCreatingToken" = "ErrorCreatingToken";
-  }
-  export class Invalid extends Error {
-    tag: "InvalidToken" = "InvalidToken";
-  }
-  export class Expired extends Error {
-    tag: "ExpiredToken" = "ExpiredToken";
-  }
+  export class ErrorCreating extends taggedError("ErrorCreatingToken") {}
+  export class Invalid extends taggedError("InvalidToken") {}
+  export class Expired extends taggedError("ExpiredToken") {}
 }
