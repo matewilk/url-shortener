@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { withCapabilitiesLayout } from "@/capabilities/withCapabilitiesLayout";
+import { Capabilities } from "@/capabilities/Capabilities";
+
 import { Header } from "../layouts/Header";
 import { Footer } from "../layouts/Footer";
 
@@ -21,10 +24,12 @@ export const metadata: Metadata = {
   description: "Url shortener",
 };
 
-export default function RootLayout({
+function RootLayout({
   children,
+  capabilities,
 }: Readonly<{
   children: React.ReactNode;
+  capabilities: Capabilities;
 }>) {
   return (
     <html lang="en">
@@ -33,7 +38,7 @@ export default function RootLayout({
       >
         <div className="font-[family-name:var(--font-geist-sans)]">
           <div className="flex flex-col min-h-screen pb-10 items-center justify-between w-full max-w-7xl mx-auto">
-            <Header />
+            <Header capabilities={capabilities} />
             <main className="flex-grow flex items-center justify-center p-6">
               {children}
             </main>
@@ -44,3 +49,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+export default withCapabilitiesLayout(RootLayout);

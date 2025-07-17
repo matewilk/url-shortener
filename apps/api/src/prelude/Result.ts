@@ -33,6 +33,20 @@ export const match = <T, E, A>(result: Result<T, E>, cases: Cases<T, E, A>) => {
   }
 };
 
+export const map = <T, E, U>(
+  result: Result<T, E>,
+  fn: (value: T) => U
+): Result<U, E> => {
+  return result.kind === "success" ? ok(fn(result.value)) : err(result.error);
+};
+
+export const flatMap = <T, E, U>(
+  result: Result<T, E>,
+  fn: (value: T) => Result<U, E>
+): Result<U, E> => {
+  return result.kind === "success" ? fn(result.value) : err(result.error);
+};
+
 export const taggedError = <Tag extends string>(tag: Tag) =>
   class extends Error {
     tag: Tag = tag;

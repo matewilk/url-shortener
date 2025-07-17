@@ -277,13 +277,11 @@ export interface paths {
                              * @enum {string}
                              */
                             kind?: "success | error";
-                            value?: {
-                                /**
-                                 * @description JWT token
-                                 * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                                 */
-                                token?: string;
-                            };
+                            /**
+                             * @description JWT token
+                             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                             */
+                            token?: string;
                         };
                     };
                 };
@@ -304,6 +302,80 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/id/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Find user by ID
+         * @description Retrieve user information by their ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description The ID of the user to retrieve */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description User found successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            user: {
+                                /** @enum {string} */
+                                kind: "success";
+                                value: {
+                                    /**
+                                     * @description The ID of the user
+                                     * @example 12345
+                                     */
+                                    id: string;
+                                    /**
+                                     * @description The name of the user
+                                     * @example johndoe
+                                     */
+                                    name: string;
+                                    /**
+                                     * @description The email of the user
+                                     * @example johndoe@email.com
+                                     */
+                                    email: string;
+                                };
+                            } | {
+                                /** @enum {string} */
+                                kind: "error";
+                                error: {
+                                    /**
+                                     * @description Error message
+                                     * @example User not found
+                                     */
+                                    message: string;
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;

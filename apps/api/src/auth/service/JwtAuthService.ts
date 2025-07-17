@@ -4,6 +4,7 @@ import jwt, {
   JsonWebTokenError,
   TokenExpiredError,
 } from "jsonwebtoken";
+import type ms from "ms";
 
 import { Result, ok, err } from "@/prelude/Result";
 import { AuthService, Token, Auth } from "./AuthService";
@@ -35,12 +36,17 @@ export class JwtAuthService implements AuthService {
 
   async generateAuthToken(
     payload: Token.Payload,
-    expiresIn?: string
+    expiresIn?: ms.StringValue | number
   ): Promise<{ token: string }> {
     try {
-      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+      const secret = process.env.JWT_SECRET;
+      if (!secret) throw new Token.ErrorCreating();
+
+      const options: jwt.SignOptions = {
         expiresIn: expiresIn ?? "1h",
-      });
+      };
+
+      const token = jwt.sign(payload, secret, options);
 
       return { token };
     } catch (error) {
@@ -84,7 +90,7 @@ export class JwtAuthService implements AuthService {
     if (
       typeof response.value === "object" &&
       "name" in response.value &&
-      response.value.name === payload.name
+      response.value.id === payload.id
     ) {
       return ok(true);
     }
