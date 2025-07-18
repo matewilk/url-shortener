@@ -49,8 +49,8 @@ export class DefaultUserService implements UserService {
       return err(isPasswordValid.error);
     }
 
-    const { name } = user.value;
-    const token = await this.auth.generateAuthToken({ name });
+    const { id } = user.value;
+    const token = await this.auth.generateAuthToken({ id });
 
     return ok(token);
   }

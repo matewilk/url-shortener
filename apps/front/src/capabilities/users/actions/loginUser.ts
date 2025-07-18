@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 import { Capabilities } from "@/capabilities/Capabilities";
 import { RemoteResult } from "@/prelude/RemoteResult";
 
@@ -34,6 +36,19 @@ export const loginUser: LoginUserAction = async (
         kind: "error",
         error: { message: "Internal server error." },
       };
+    }
+
+    const cookieStore = await cookies();
+
+    if (process.env.JWT_TOKEN_NAME && data?.token) {
+      cookieStore.set({
+        secure: process.env.NODE_ENV === "production",
+        name: process.env.JWT_TOKEN_NAME,
+        value: data.token,
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      });
     }
 
     return {
