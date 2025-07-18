@@ -42,9 +42,11 @@ export const loginUser: LoginUserAction = async (
 
     if (process.env.JWT_TOKEN_NAME && data?.token) {
       cookieStore.set({
+        secure: process.env.NODE_ENV === "production",
         name: process.env.JWT_TOKEN_NAME,
         value: data.token,
         httpOnly: true,
+        sameSite: "lax",
         path: "/",
       });
     }

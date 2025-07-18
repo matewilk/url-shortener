@@ -6,10 +6,7 @@ import { flatMap, RemoteResult, ok } from "@/prelude/RemoteResult";
 
 export interface GetUserDataAction {
   (prevState: unknown, capabilities: Capabilities): Promise<
-    RemoteResult<
-      { user: { email: string | undefined; name: string | undefined } },
-      { message: string }
-    >
+    RemoteResult<{ user: { email: string; name: string } }, { message: string }>
   >;
 }
 
@@ -32,6 +29,7 @@ export const getUserData: GetUserDataAction = async (
 
     const { data, error } = await capabilities.apiClient.GET("/users/id/{id}", {
       params: { path: { id } },
+      // TODO: decide whether to use Bearer or Cookie
       headers: {
         Authorization: `Bearer ${token}`,
       },

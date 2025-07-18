@@ -1,6 +1,7 @@
 import { client } from "@shortify/api-client/client";
 import { Capabilities } from "./Capabilities";
 import { getUserData } from "./users/actions/getUserData";
+import { logoutUserAction } from "./users/actions/logoutUserAction";
 
 interface WithCapabilitiesLayout {
   (props: {
@@ -16,6 +17,7 @@ export const withCapabilitiesLayout = (
     const capabilities = {
       apiClient: client("http://localhost:3001"),
       getUserData: getUserData,
+      logoutUserAction: logoutUserAction,
     };
 
     return layout({ children, capabilities });
