@@ -5,5 +5,5 @@ import { LogoutUserAction } from "./users/actions/logoutUser";
 export interface Capabilities {
   apiClient: Client;
   getUserData: GetUserDataAction;
-  logoutUserAction: LogoutUserAction;
+  logoutUser: LogoutUserAction;
 }

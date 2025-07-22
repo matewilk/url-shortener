@@ -40,10 +40,10 @@ export const map = <T, E, U>(
   return result.kind === "success" ? ok(fn(result.value)) : err(result.error);
 };
 
-export const flatMap = <T, E, U>(
+export const flatMap = <T, E, U, E1>(
   result: Result<T, E>,
-  fn: (value: T) => Result<U, E>
-): Result<U, E> => {
+  fn: (value: T) => Result<U, E | E1>
+): Result<U, E | E1> => {
   return result.kind === "success" ? fn(result.value) : err(result.error);
 };
 
@@ -59,7 +59,7 @@ type TagCases<E extends { tag: string }, A> = {
 export const matchErrorTag = <E extends { tag: string }, A>(
   value: E,
   cases: TagCases<E, A>
-) => {
+): A => {
   // @ts-expect-error
-  return cases[cases.tag](value);
+  return cases[value.tag](value);
 };

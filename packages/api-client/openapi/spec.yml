@@ -236,49 +236,22 @@ paths:
                 required:
                   - user
                 properties:
-                  user:
-                    oneOf:
-                      - type: object
-                        required:
-                          - kind
-                          - value
-                        properties:
-                          kind:
-                            type: string
-                            enum: [success]
-                          value:
-                            type: object
-                            required:
-                              - id
-                              - name
-                              - email
-                            properties:
-                              id:
-                                type: string
-                                description: The ID of the user
-                                example: 12345
-                              name:
-                                type: string
-                                description: The name of the user
-                                example: johndoe
-                              email:
-                                type: string
-                                description: The email of the user
-                                example: johndoe@email.com
-                      - type: object
-                        required:
-                          - kind
-                          - error
-                        properties:
-                          kind:
-                            type: string
-                            enum: [error]
-                          error:
-                            type: object
-                            required:
-                              - message
-                            properties:
-                              message:
-                                type: string
-                                description: Error message
-                                example: User not found
+                  user:  
+                    type: object
+                    required:
+                      - id
+                      - name
+                      - email
+                    properties:
+                      id:
+                        type: string
+                        description: The ID of the user
+                        example: 12345
+                      name:
+                        type: string
+                        description: The name of the user
+                        example: johndoe
+                      email:
+                        type: string
+                        description: The email of the user
+                        example: johndoe@email.com

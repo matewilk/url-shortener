@@ -26,9 +26,9 @@ export const withCapabilities =
     searchParams: Promise<SearchParams>;
   }) => {
     const capabilities = {
-      apiClient: apiClient,
-      getUserData: getUserData,
-      logoutUserAction: logoutUserAction,
+      apiClient,
+      getUserData: getUserData(apiClient),
+      logoutUser: logoutUserAction,
     };
 
     const req = {

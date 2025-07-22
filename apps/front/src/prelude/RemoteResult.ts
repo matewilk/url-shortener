@@ -23,10 +23,3 @@ export interface Init {
 }
 
 export type RemoteResult<T, E> = Init | OK<T> | Err<E>;
-
-export const flatMap = <T, E, U>(
-  result: RemoteResult<T, E>,
-  fn: (value: T) => RemoteResult<U, E>
-): RemoteResult<U, E> => {
-  return result.kind === "success" ? fn(result.value) : result;
-};

@@ -339,35 +339,21 @@ export interface paths {
                     content: {
                         "application/json": {
                             user: {
-                                /** @enum {string} */
-                                kind: "success";
-                                value: {
-                                    /**
-                                     * @description The ID of the user
-                                     * @example 12345
-                                     */
-                                    id: string;
-                                    /**
-                                     * @description The name of the user
-                                     * @example johndoe
-                                     */
-                                    name: string;
-                                    /**
-                                     * @description The email of the user
-                                     * @example johndoe@email.com
-                                     */
-                                    email: string;
-                                };
-                            } | {
-                                /** @enum {string} */
-                                kind: "error";
-                                error: {
-                                    /**
-                                     * @description Error message
-                                     * @example User not found
-                                     */
-                                    message: string;
-                                };
+                                /**
+                                 * @description The ID of the user
+                                 * @example 12345
+                                 */
+                                id: string;
+                                /**
+                                 * @description The name of the user
+                                 * @example johndoe
+                                 */
+                                name: string;
+                                /**
+                                 * @description The email of the user
+                                 * @example johndoe@email.com
+                                 */
+                                email: string;
                             };
                         };
                     };

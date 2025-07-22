@@ -14,10 +14,11 @@ export const withCapabilitiesLayout = (
   layout: WithCapabilitiesLayout
 ): ((props: { children: React.ReactNode }) => React.ReactNode) => {
   return ({ children }) => {
+    const apiClient = client("http://localhost:3001");
     const capabilities = {
-      apiClient: client("http://localhost:3001"),
-      getUserData: getUserData,
-      logoutUserAction: logoutUserAction,
+      apiClient,
+      getUserData: getUserData(apiClient),
+      logoutUser: logoutUserAction,
     };
 
     return layout({ children, capabilities });

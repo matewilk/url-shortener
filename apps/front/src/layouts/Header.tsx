@@ -11,8 +11,8 @@ interface MenuItem {
 }
 
 export const Header = async ({ capabilities }: HeaderProps) => {
-  const userResult = await capabilities.getUserData({}, capabilities);
-  const logoutHandler = capabilities.logoutUserAction;
+  const userResult = await capabilities.getUserData();
+  const logoutHandler = capabilities.logoutUser;
 
   const title = "Shortify";
   const menu: Array<MenuItem> = [

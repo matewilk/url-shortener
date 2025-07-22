@@ -22,7 +22,7 @@ export namespace User {
   export type Return = Omit<User, "password">; // | "email"
 
   export class NotFound extends taggedError("NotFound") {}
-  export class AlreadyExists extends taggedError("UserAlreadyExists") {}
+  export class AlreadyExists extends taggedError("AlreadyExists") {}
 
   export type UpdateError = NotFound | AlreadyExists;
 }
