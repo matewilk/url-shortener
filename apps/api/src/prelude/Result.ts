@@ -33,6 +33,15 @@ export const match = <T, E, A>(result: Result<T, E>, cases: Cases<T, E, A>) => {
   }
 };
 
+export const flatMapAsyncW = <T, E, U, E1>(
+  result: Result<T, E>,
+  fn: (value: T) => Promise<Result<U, E | E1>>
+): Promise<Result<U, E | E1>> => {
+  return result.kind === "success"
+    ? fn(result.value)
+    : Promise.resolve(err(result.error));
+};
+
 export const taggedError = <Tag extends string>(tag: Tag) =>
   class extends Error {
     tag: Tag = tag;
@@ -45,7 +54,7 @@ type TagCases<E extends { tag: string }, A> = {
 export const matchErrorTag = <E extends { tag: string }, A>(
   value: E,
   cases: TagCases<E, A>
-) => {
+): A => {
   // @ts-expect-error
-  return cases[cases.tag](value);
+  return cases[value.tag](value);
 };

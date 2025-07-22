@@ -1,5 +1,8 @@
 import { Capabilities } from "./Capabilities";
 
+import { getUserData } from "./users/actions/getUserData";
+import { logoutUserAction } from "./users/actions/logoutUserAction";
+
 import { client } from "@shortify/api-client/client";
 const apiClient = client("http://localhost:3001");
 
@@ -23,7 +26,9 @@ export const withCapabilities =
     searchParams: Promise<SearchParams>;
   }) => {
     const capabilities = {
-      apiClient: apiClient,
+      apiClient,
+      getUserData: getUserData(apiClient),
+      logoutUser: logoutUserAction,
     };
 
     const req = {

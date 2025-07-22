@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Route } from "@/Routes";
 import { UserService } from "../service/UserService";
 import { baseUserSchema } from "@/users//User";
+import { err, match, matchErrorTag, ok } from "@/prelude/Result";
 
 type UserRouteServices = {
   userService: UserService;
@@ -15,19 +16,22 @@ export const registerUser: Route<UserRouteServices> = async (
   res,
   { userService }
 ): Promise<Response> => {
-  try {
-    const { name, email, password } = registerUserSchema.parse(req.body);
+  const { name, email, password } = registerUserSchema.parse(req.body);
 
-    const result = await userService.register({
-      name,
-      email,
-      password,
-    });
+  const result = await userService.register({
+    name,
+    email,
+    password,
+  });
 
-    return res.json(result);
-  } catch (error) {
-    throw error;
-  }
+  return match(result, {
+    onOk: (value) => res.status(201).json({ user: value }),
+    onErr: (error) =>
+      matchErrorTag(error, {
+        AlreadyExists: (error) =>
+          res.status(409).json({ error: "User already exists" }),
+      }),
+  });
 };
 
 const loginUserSchema = baseUserSchema.pick({ email: true, password: true });
@@ -41,11 +45,10 @@ export const loginUser: Route<UserRouteServices> = async (
 
   const result = await userService.login(email, password);
 
-  if (result.kind === "error") {
-    return res.status(401).json({ error: "Unauthorised" });
-  }
-
-  return res.json(result.value);
+  return match(result, {
+    onOk: (token) => res.json({ token }),
+    onErr: () => res.status(401).json({ error: "Unauthorized" }),
+  });
 };
 
 const findByIdSchema = baseUserSchema.pick({ id: true });
@@ -55,15 +58,17 @@ export const findUserById: Route<UserRouteServices> = async (
   res: Response,
   { userService }
 ): Promise<Response> => {
-  try {
-    const { id } = findByIdSchema.parse(req.params);
+  const { id } = findByIdSchema.parse(req.params);
 
-    const result = await userService.findById(Number(id));
+  const result = await userService.findById(Number(id));
 
-    return res.json({ user: result });
-  } catch (error) {
-    throw error;
-  }
+  return match(result, {
+    onOk: (value) => res.json({ user: value }),
+    onErr: (error) =>
+      matchErrorTag(error, {
+        NotFound: (error) => res.status(404).json({ error: "User not found" }),
+      }),
+  });
 };
 
 const findByEmailSchema = baseUserSchema.pick({ email: true });
@@ -73,15 +78,17 @@ export const findUserByEmail: Route<UserRouteServices> = async (
   res: Response,
   { userService }
 ) => {
-  try {
-    const { email } = findByEmailSchema.parse(req.params);
+  const { email } = findByEmailSchema.parse(req.params);
 
-    const result = await userService.findByEmail(email);
+  const result = await userService.findByEmail(email);
 
-    return res.json({ user: result });
-  } catch (error) {
-    throw error;
-  }
+  return match(result, {
+    onOk: (value) => res.json({ user: value }),
+    onErr: (error) =>
+      matchErrorTag(error, {
+        NotFound: (error) => res.status(404).json({ error: "User not found" }),
+      }),
+  });
 };
 
 const updateUserParamsSchema = baseUserSchema.pick({ id: true });
@@ -92,20 +99,24 @@ export const updateUser: Route<UserRouteServices> = async (
   res: Response,
   { userService }
 ): Promise<Response> => {
-  try {
-    const { id } = updateUserParamsSchema.parse(req.params);
-    const { name, email, password } = updateUserBodySchema.parse(req.body);
+  const { id } = updateUserParamsSchema.parse(req.params);
+  const { name, email, password } = updateUserBodySchema.parse(req.body);
 
-    const result = await userService.update(id, {
-      name,
-      email,
-      password,
-    });
+  const result = await userService.update(id, {
+    name,
+    email,
+    password,
+  });
 
-    return res.json({ user: result });
-  } catch (error) {
-    throw error;
-  }
+  return match(result, {
+    onOk: (value) => res.json({ user: value }),
+    onErr: (error) =>
+      matchErrorTag(error, {
+        NotFound: () => res.status(404).json({ error: "User not found" }),
+        AlreadyExists: () =>
+          res.status(409).json({ error: "User already exists" }),
+      }),
+  });
 };
 
 const deleteUserSchema = baseUserSchema.pick({ id: true });
@@ -115,13 +126,9 @@ export const deleteUser: Route<UserRouteServices> = async (
   res: Response,
   { userService }
 ): Promise<Response> => {
-  try {
-    const { id } = deleteUserSchema.parse(req.params);
+  const { id } = deleteUserSchema.parse(req.params);
 
-    await userService.delete(id);
+  await userService.delete(id);
 
-    return res.send(204);
-  } catch (error) {
-    throw error;
-  }
+  return res.send(204);
 };

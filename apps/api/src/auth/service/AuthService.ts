@@ -1,3 +1,4 @@
+import ms from "ms";
 import { Result, taggedError } from "@/prelude/Result";
 
 export interface AuthService {
@@ -8,7 +9,7 @@ export interface AuthService {
   ) => Promise<Result<boolean, Auth.InvalidPassword>>;
   generateAuthToken: (
     payload: Token.Payload,
-    expiresIn?: string
+    expiresIn?: ms.StringValue | number
   ) => Promise<Token.Draft>;
   parseAuthToken: (
     token: string
@@ -27,7 +28,7 @@ export namespace Auth {
 export namespace Token {
   // TODO: this doesn't feel right to be here - too specific for a common module
   export type Payload = {
-    name: string;
+    id: number;
   };
   // TODO: what about simply token: string for e.g. validateAuthToken?
   export type Draft = { token: string };

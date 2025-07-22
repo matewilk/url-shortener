@@ -15,6 +15,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@shortify/api-client": "*",
+    "jsonwebtoken": "^9.0.2",
     "next": "^15.0.1",
     "openapi-fetch": "^0.12.0",
     "react": "^18.3.1",
@@ -26,6 +27,7 @@
     "@playwright/test": "^1.47.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
