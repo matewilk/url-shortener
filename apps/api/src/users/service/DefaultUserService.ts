@@ -1,4 +1,11 @@
-import { Result, ok, err, match, matchErrorTag } from "@/prelude/Result";
+import {
+  Result,
+  ok,
+  err,
+  match,
+  matchErrorTag,
+  flatMapAsyncW,
+} from "@/prelude/Result";
 
 import { Auth, AuthService, Token } from "../../auth/service/AuthService";
 import { UserRepository } from "../repository/UserRepository";
@@ -26,25 +33,18 @@ export class DefaultUserService implements UserService {
     email: string,
     password: string
   ): Promise<Result<Token.Draft, User.NotFound | Auth.InvalidPassword>> {
-    const user = await this.repo.findByEmail(email);
+    const userResult = await this.repo.findByEmail(email);
 
-    if (user.kind === "error") {
-      return err(user.error);
-    }
-
-    const isPasswordValid = await this.auth.verifyPassword(
-      password,
-      user.value.password
-    );
-
-    if (isPasswordValid.kind === "error") {
-      return err(isPasswordValid.error);
-    }
-
-    const { id } = user.value;
-    const token = await this.auth.generateAuthToken({ id });
-
-    return ok(token);
+    return flatMapAsyncW(userResult, async (user) => {
+      const passwordResult = await this.auth.verifyPassword(
+        password,
+        user.password
+      );
+      return flatMapAsyncW(passwordResult, async () => {
+        const token = await this.auth.generateAuthToken({ id: user.id });
+        return ok(token);
+      });
+    });
   }
 
   async findById(id: number): Promise<Result<User, User.NotFound>> {

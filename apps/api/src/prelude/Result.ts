@@ -33,18 +33,13 @@ export const match = <T, E, A>(result: Result<T, E>, cases: Cases<T, E, A>) => {
   }
 };
 
-export const map = <T, E, U>(
+export const flatMapAsyncW = <T, E, U, E1>(
   result: Result<T, E>,
-  fn: (value: T) => U
-): Result<U, E> => {
-  return result.kind === "success" ? ok(fn(result.value)) : err(result.error);
-};
-
-export const flatMap = <T, E, U, E1>(
-  result: Result<T, E>,
-  fn: (value: T) => Result<U, E | E1>
-): Result<U, E | E1> => {
-  return result.kind === "success" ? fn(result.value) : err(result.error);
+  fn: (value: T) => Promise<Result<U, E | E1>>
+): Promise<Result<U, E | E1>> => {
+  return result.kind === "success"
+    ? fn(result.value)
+    : Promise.resolve(err(result.error));
 };
 
 export const taggedError = <Tag extends string>(tag: Tag) =>

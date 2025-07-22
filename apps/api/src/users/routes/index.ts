@@ -45,11 +45,10 @@ export const loginUser: Route<UserRouteServices> = async (
 
   const result = await userService.login(email, password);
 
-  if (result.kind === "error") {
-    return res.status(401).json({ error: "Unauthorised" });
-  }
-
-  return res.json(result.value);
+  return match(result, {
+    onOk: (token) => res.json({ token }),
+    onErr: () => res.status(401).json({ error: "Unauthorized" }),
+  });
 };
 
 const findByIdSchema = baseUserSchema.pick({ id: true });

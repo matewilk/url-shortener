@@ -14,13 +14,15 @@ export const Header = async ({ capabilities }: HeaderProps) => {
   const userResult = await capabilities.getUserData();
   const logoutHandler = capabilities.logoutUser;
 
+  const user = userResult.kind === "success" ? userResult.value.user : null;
+
   const title = "Shortify";
   const menu: Array<MenuItem> = [
     { title: "Home", href: "/" },
     { title: "About", href: "/about" },
-    ...(userResult.kind === "success" && userResult.value.user.name
+    ...(user
       ? [
-          { title: `Hi, ${userResult.value.user.name}`, href: "/profile" },
+          { title: `Hi, ${user.name}`, href: "/profile" },
           { title: "Logout", action: logoutHandler },
         ]
       : [{ title: "Login", href: "/login" }]),
