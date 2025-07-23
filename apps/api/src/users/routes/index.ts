@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { Route } from "@/Routes";
 import { UserService } from "../service/UserService";
 import { baseUserSchema } from "@/users//User";
-import { err, match, matchErrorTag, ok } from "@/prelude/Result";
+import { match, matchErrorTag } from "@/prelude/Result";
 
 type UserRouteServices = {
   userService: UserService;
@@ -46,7 +46,7 @@ export const loginUser: Route<UserRouteServices> = async (
   const result = await userService.login(email, password);
 
   return match(result, {
-    onOk: (token) => res.json({ token }),
+    onOk: (token) => res.json(token),
     onErr: () => res.status(401).json({ error: "Unauthorized" }),
   });
 };
@@ -66,7 +66,7 @@ export const findUserById: Route<UserRouteServices> = async (
     onOk: (value) => res.json({ user: value }),
     onErr: (error) =>
       matchErrorTag(error, {
-        NotFound: (error) => res.status(404).json({ error: "User not found" }),
+        NotFound: () => res.status(404).json({ error: "User not found" }),
       }),
   });
 };
@@ -86,7 +86,7 @@ export const findUserByEmail: Route<UserRouteServices> = async (
     onOk: (value) => res.json({ user: value }),
     onErr: (error) =>
       matchErrorTag(error, {
-        NotFound: (error) => res.status(404).json({ error: "User not found" }),
+        NotFound: () => res.status(404).json({ error: "User not found" }),
       }),
   });
 };
