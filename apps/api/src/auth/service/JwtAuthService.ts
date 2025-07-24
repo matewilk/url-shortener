@@ -11,27 +11,19 @@ import { AuthService, Token, Auth } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<string> {
-    try {
-      const saltRounds = 10;
-      return await bcrypt.hash(password, saltRounds);
-    } catch (error) {
-      throw error;
-    }
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
   }
 
   async verifyPassword(
     password: string,
     dbPassword: string
   ): Promise<Result<boolean, Auth.InvalidPassword>> {
-    try {
-      const isValid = await bcrypt.compare(password, dbPassword);
+    const isValid = await bcrypt.compare(password, dbPassword);
 
-      if (!isValid) return err(new Auth.InvalidPassword());
+    if (!isValid) return err(new Auth.InvalidPassword());
 
-      return ok(isValid);
-    } catch (error) {
-      throw error;
-    }
+    return ok(isValid);
   }
 
   async generateAuthToken(

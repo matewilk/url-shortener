@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { AuthService } from "./auth/service/AuthService";
 import { JwtPayload } from "jsonwebtoken";
+import { UserService } from "./users/service/UserService";
 
 export interface Route<Services extends Record<string, unknown>> {
   (req: Request, res: Response, services: Services): Promise<Response>;
@@ -49,17 +50,21 @@ export const withAuth =
   };
 
 export const withAuthorisation =
-  <Services extends Record<string, unknown>>(
+  <Services extends { userService: UserService } & { user: JwtPayload }>(
     route: Route<Services>
-  ): Route<Services & { user: JwtPayload }> =>
-  async (
-    req: Request,
-    res: Response,
-    services: Services & { user: JwtPayload }
-  ) => {
-    const { user } = services;
+  ): Route<Services> =>
+  async (req: Request, res: Response, services: Services) => {
+    const { user, userService } = services;
 
-    if (req.params.id && user.payload.id !== parseInt(req.params.id, 10)) {
+    const userResult = await userService.findById(user.payload.id);
+
+    const isAdmin =
+      userResult.kind === "success" && userResult.value.name === "Admin";
+
+    const isSelf =
+      req.params.id && user.payload.id === parseInt(req.params.id, 10);
+
+    if (!isAdmin && !isSelf) {
       return res.status(403).json({ error: "Forbidden" });
     }
 
