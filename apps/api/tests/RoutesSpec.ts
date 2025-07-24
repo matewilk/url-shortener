@@ -1,39 +1,78 @@
 import { describe, it, expect, vi } from "vitest";
 import fc from "fast-check";
-import { withAuthorisation, Route } from "../src/Routes";
+import { withAuthorisation, withServices, Route } from "../src/Routes";
 import { UserService } from "../src/users/service/UserService";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+
+const makeRes = () => {
+  const res: Partial<Response> = {
+    status: vi.fn().mockReturnThis(),
+    json: vi.fn().mockReturnThis(),
+  };
+  return res as Response;
+};
 
 export namespace RoutesSpec {
-  export const run = (
+  export const runWithServices = (
+    withServicesFactory: (
+      route: Route<any>,
+      services: Record<string, unknown>
+    ) => ReturnType<typeof withServices>
+  ) => {
+    describe("withServices", () => {
+      it("calls route with req, res and services", async () => {
+        const makeReq = () => ({} as Request);
+        const req = makeReq();
+        const res = makeRes();
+        const next = vi.fn() as NextFunction;
+        const services = { myService: 123 };
+        const route = vi.fn().mockResolvedValue(res);
+
+        const withServices = withServicesFactory(route, services);
+        await withServices(req, res, next);
+
+        expect(route).toHaveBeenCalledWith(req, res, services);
+        expect(next).not.toHaveBeenCalled();
+      });
+
+      it("calls next on error", async () => {
+        const makeReq = () => ({} as Request);
+        const req = makeReq();
+        const res = makeRes();
+        const next = vi.fn() as NextFunction;
+        const services = { myService: 123 };
+        const error = new Error("Test error");
+        const route = vi.fn().mockRejectedValue(error);
+
+        const withServices = withServicesFactory(route, services);
+        await withServices(req, res, next);
+
+        expect(next).toHaveBeenCalledWith(error);
+      });
+    });
+  };
+
+  export const runWithAuthorisation = (
     withAuthorisationFactory: (
-      userService: UserService,
-      route: Route<any>
+      route: Route<any>,
+      userService: UserService
     ) => ReturnType<typeof withAuthorisation>
   ) => {
     describe("withAuthorisation", () => {
-      const makeRes = () => {
-        const res: Partial<Response> = {
-          status: vi.fn().mockReturnThis(),
-          json: vi.fn().mockReturnThis(),
-        };
-        return res as Response;
-      };
-
       const makeReq = (id?: string | number) => {
         return { params: id ? { id: String(id) } : {} } as unknown as Request;
-      };
-
-      const userServiceMock = (userResult: any) => {
-        return {
-          findById: vi.fn().mockResolvedValue(userResult),
-        } as unknown as UserService;
       };
 
       const dummyRoute: Route<any> = vi.fn(async (req, res) => {
         (res as any).called = true;
         return res;
       });
+
+      const userServiceMock = (userResult: any) => {
+        return {
+          findById: vi.fn().mockResolvedValue(userResult),
+        } as unknown as UserService;
+      };
 
       it("allows admin", async () => {
         await fc.assert(
@@ -46,7 +85,7 @@ export namespace RoutesSpec {
             const req = makeReq(userId);
             const res = makeRes();
             const services = { user, userService };
-            const wrapped = withAuthorisationFactory(userService, dummyRoute);
+            const wrapped = withAuthorisationFactory(dummyRoute, userService);
             await wrapped(req, res, services);
             expect((res as any).called).toBe(true);
           })
@@ -66,7 +105,7 @@ export namespace RoutesSpec {
               const req = makeReq(userId);
               const res = makeRes();
               const services = { user, userService };
-              const wrapped = withAuthorisationFactory(userService, dummyRoute);
+              const wrapped = withAuthorisationFactory(dummyRoute, userService);
               await wrapped(req, res, services);
               expect((res as any).called).toBe(true);
             }
@@ -90,7 +129,7 @@ export namespace RoutesSpec {
               const req = makeReq(otherId);
               const res = makeRes();
               const services = { user, userService };
-              const wrapped = withAuthorisationFactory(userService, dummyRoute);
+              const wrapped = withAuthorisationFactory(dummyRoute, userService);
               await wrapped(req, res, services);
               expect(res.status).toHaveBeenCalledWith(403);
               expect(res.json).toHaveBeenCalledWith({ error: "Forbidden" });

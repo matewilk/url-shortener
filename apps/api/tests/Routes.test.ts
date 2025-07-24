@@ -1,4 +1,7 @@
-import { withAuthorisation } from "../src/Routes";
+import { withAuthorisation, withServices } from "../src/Routes";
 import { RoutesSpec } from "./RoutesSpec";
 
-RoutesSpec.run((_userService, route) => withAuthorisation(route));
+RoutesSpec.runWithServices((route, services) => withServices(route, services));
+RoutesSpec.runWithAuthorisation((route, _userService) =>
+  withAuthorisation(route)
+);
