@@ -50,7 +50,10 @@ app.put(
   "/users/id/:id",
   withAuth(withAuthorisation(updateUser), authService, { userService })
 );
-app.delete("/users/id/:id", withAuth(deleteUser, authService, { userService }));
+app.delete(
+  "/users/id/:id",
+  withAuth(withAuthorisation(deleteUser), authService, { userService })
+);
 
 app.post("/login", withServices(loginUser, { userService }));
 
