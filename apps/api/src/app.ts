@@ -19,7 +19,7 @@ import { DbUserRepository } from "./users/repository/DbUserRepository";
 import { DefaultUserService } from "./users/service/DefaultUserService";
 import { JwtAuthService } from "./auth/service/JwtAuthService";
 
-import { withAuth, withServices } from "./Routes";
+import { withAuth, withAuthorisation, withServices } from "./Routes";
 
 const hash = new Base62();
 const prisma = new PrismaClient();
@@ -38,13 +38,22 @@ app.post("/shorten", withServices(shorten, { urlService }));
 app.get("/:shortUrl", withServices(expand, { urlService }));
 
 app.post("/users", withServices(registerUser, { userService }));
-app.get("/users/id/:id", withAuth(findUserById, authService, { userService }));
+app.get(
+  "/users/id/:id",
+  withAuth(withAuthorisation(findUserById), authService, { userService })
+);
 app.get(
   "/users/email/:email",
   withAuth(findUserByEmail, authService, { userService })
 );
-app.put("/users/id/:id", withAuth(updateUser, authService, { userService }));
-app.delete("/users/id/:id", withAuth(deleteUser, authService, { userService }));
+app.put(
+  "/users/id/:id",
+  withAuth(withAuthorisation(updateUser), authService, { userService })
+);
+app.delete(
+  "/users/id/:id",
+  withAuth(withAuthorisation(deleteUser), authService, { userService })
+);
 
 app.post("/login", withServices(loginUser, { userService }));
 
