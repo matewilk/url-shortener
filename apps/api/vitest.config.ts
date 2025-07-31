@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     env: {
       JWT_SECRET: "jwt-sercret-test",
+      JWT_TOKEN_NAME: "testAuthToken",
     },
   },
   resolve: {

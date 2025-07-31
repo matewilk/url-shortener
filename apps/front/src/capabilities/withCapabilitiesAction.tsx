@@ -13,7 +13,9 @@ export const withCapabilitiesAction = <State, Payload>(
   action: WithCapabilitiesAction<State, Payload>
 ) => {
   return async (state: Awaited<State>, payload: Payload) => {
-    const apiClient = client("http://localhost:3001");
+    const apiClient = client(
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+    );
     const capabilities = {
       apiClient,
       getUserData: getUserData(apiClient),
