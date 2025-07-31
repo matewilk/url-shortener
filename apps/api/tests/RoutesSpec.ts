@@ -85,8 +85,8 @@ export namespace RoutesSpec {
         const user = { id: "user-id" };
         const req = makeReq({
           user,
-          headers: {
-            authorization: `Bearer dummy-token`,
+          cookies: {
+            [`${process.env.JWT_TOKEN_NAME}`]: "dummy-token",
           },
         });
         const res = makeRes();
@@ -105,7 +105,9 @@ export namespace RoutesSpec {
       });
 
       it("returns 401 if no token", async () => {
-        const req = makeReq();
+        const req = makeReq({
+          cookies: {},
+        });
         req.headers = { authorization: undefined };
         const res = makeRes();
         const services = {};

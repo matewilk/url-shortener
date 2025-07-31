@@ -4,7 +4,9 @@ import { getUserData } from "./users/actions/getUserData";
 import { logoutUserAction } from "./users/actions/logoutUserAction";
 
 import { client } from "@shortify/api-client/client";
-const apiClient = client("http://localhost:3001");
+const apiClient = client(
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+);
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 

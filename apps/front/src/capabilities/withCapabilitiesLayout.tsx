@@ -14,7 +14,9 @@ export const withCapabilitiesLayout = (
   layout: WithCapabilitiesLayout
 ): ((props: { children: React.ReactNode }) => React.ReactNode) => {
   return ({ children }) => {
-    const apiClient = client("http://localhost:3001");
+    const apiClient = client(
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+    );
     const capabilities = {
       apiClient,
       getUserData: getUserData(apiClient),

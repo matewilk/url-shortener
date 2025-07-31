@@ -28,9 +28,8 @@ export const getUserData =
 
       const { data, error } = await apiClient.GET("/users/id/{id}", {
         params: { path: { id } },
-        // TODO: decide whether to use Bearer or Cookie
         headers: {
-          Authorization: `Bearer ${token}`,
+          Cookie: `${process.env.JWT_TOKEN_NAME}=${token}`,
         },
       });
 

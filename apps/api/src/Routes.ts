@@ -29,7 +29,7 @@ export const withAuth =
   ) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = req.headers.authorization?.split(" ")[1];
+      const token = req.cookies[process.env.JWT_TOKEN_NAME || ""];
 
       if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -57,7 +57,6 @@ export const withAuthorisation =
     const { user, userService } = services;
 
     const userResult = await userService.findById(user.payload.id);
-
     const isAdmin =
       userResult.kind === "success" && userResult.value.name === "Admin";
 

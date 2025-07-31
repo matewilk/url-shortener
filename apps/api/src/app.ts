@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 
 import { UrlService } from "./urls/service/UrlService";
@@ -33,6 +34,7 @@ const userService = new DefaultUserService(userRepositopr, authService);
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.post("/shorten", withServices(shorten, { urlService }));
 app.get("/:shortUrl", withServices(expand, { urlService }));
