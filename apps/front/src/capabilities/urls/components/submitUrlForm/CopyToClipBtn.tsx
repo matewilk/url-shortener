@@ -1,4 +1,4 @@
-import { FiShare2 } from "react-icons/fi";
+import { FiCopy } from "react-icons/fi";
 
 type CopyToClipBtnProps = {
   url: string;
@@ -11,7 +11,7 @@ export const CopyToClipBtn = ({ url }: CopyToClipBtnProps) => (
     aria-label="Copy URL to clipboard"
     type="button"
   >
-    <FiShare2 size={20} />
+    <FiCopy size={20} />
   </button>
 );
 
