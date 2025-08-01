@@ -18,7 +18,9 @@ export const UrlBox = ({ host, path, shortUrl }: UrlBoxProps) => {
         <hr className="my-2 border-green-400" />
         <div className="flex flex-row items-center">
           <div className="bg-transparent w-full text-slate-800 h-8">
-            <span className="text-lg">{url}</span>
+            <span className="text-lg" data-testid="shortened-url">
+              {url}
+            </span>
           </div>
           <div className="flex gap-4">
             <CopyToClipBtn url={url} />

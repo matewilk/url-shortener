@@ -29,23 +29,21 @@ describe("Submit Url Form", () => {
     const input = screen.getByLabelText("Url");
     expect(input).toBeDefined();
 
-    const submit = screen.getByRole("button", { name: "Submit" });
+    const submit = screen.getByRole("button", { name: "Shorten" });
     expect(submit).toBeDefined();
   });
 
   test("submits valid form and resets input", () => {
     render(<SubmitUrlForm />);
     const input = screen.getByLabelText("Url");
-    const submit = screen.getByRole("button", { name: "Submit" });
+    const submit = screen.getByRole("button", { name: "Shorten" });
 
     fireEvent.change(input, { target: { value: "https://example.com" } });
     fireEvent.click(submit);
 
-    const urlBox = screen.getByLabelText("Url box");
+    const urlElement = screen.getByTestId("shortened-url");
 
-    expect(urlBox.getAttribute("value")).toBe(
-      "localhost:3000/expand/encodedurl"
-    );
+    expect(urlElement.textContent).toBe("localhost:3000/expand/encodedurl");
 
     // TODO: Fix this
     // expect(input.value).toBe("");
@@ -58,7 +56,7 @@ describe("Submit Url Form", () => {
       false,
     ]);
     render(<SubmitUrlForm />);
-    const submit = screen.getByRole("button", { name: "Submit" });
+    const submit = screen.getByRole("button", { name: "Shorten" });
 
     fireEvent.click(submit);
 

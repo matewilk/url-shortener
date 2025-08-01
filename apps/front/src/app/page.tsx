@@ -5,8 +5,8 @@ import { SubmitUrlForm } from "../capabilities/urls/components/submitUrlForm/Sub
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-10">
-      <div className="text-center mb-8">
+    <div className="flex flex-col gap-20">
+      <div className="text-center">
         <h1 className="text-5xl font-bold text-gray-900 mb-4">
           Shorten Your URLs
           <span className="text-blue-600"> Instantly</span>
