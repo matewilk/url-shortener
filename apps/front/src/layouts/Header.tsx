@@ -1,5 +1,6 @@
 import { Capabilities } from "@/capabilities/Capabilities";
 import { UserProfileDropdown } from "@/capabilities/users/components/UserProfile";
+import { LinkIcon } from "lucide-react";
 
 interface HeaderProps {
   capabilities: Capabilities;
@@ -22,9 +23,14 @@ export const Header = async ({ capabilities }: HeaderProps) => {
   ];
 
   return (
-    <header className="sticky top-0 text-white p-4 w-full">
-      <div className="grid grid-cols-3 items-center w-full">
-        <h1 className="text-3xl font-bold ml-6 justify-self-start">{title}</h1>
+    <header className="sticky top-0 text-blue-950 p-4 w-full bg-blue-100">
+      <div className="grid grid-cols-3 items-center w-full max-w-7xl mx-auto">
+        <a href="/" className="flex items-center">
+          <LinkIcon className="min-h-8 min-w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold ml-2 justify-self-start hidden md:block">
+            {title}
+          </h1>
+        </a>
         <nav className="flex gap-8 sm:gap-16 items-center justify-center mx-auto">
           {menu.map(({ title, href }, index) => (
             <a
