@@ -1,4 +1,7 @@
 import ms from "ms";
+import z from "zod";
+import { JwtPayload } from "jsonwebtoken";
+
 import { Result, taggedError } from "@/prelude/Result";
 
 export interface AuthService {
@@ -14,7 +17,7 @@ export interface AuthService {
   parseAuthToken: (
     token: string
     // TODO: ok to use Record<string, unknown> here instead of JwtPayload?
-  ) => Promise<Result<Record<string, unknown>, Token.Invalid | Token.Expired>>;
+  ) => Promise<Result<Token.Payload, Token.Invalid | Token.Expired>>;
   authorise: (
     token: string,
     payload: Token.Payload
@@ -25,11 +28,16 @@ export namespace Auth {
   export class InvalidPassword extends taggedError("InvalidPassord") {}
 }
 
+export const JwtPayloadSchema = z
+  .object({
+    id: z.number(),
+  })
+  .passthrough();
+type JwtPayloadWithId = z.infer<typeof JwtPayloadSchema>;
+
 export namespace Token {
   // TODO: this doesn't feel right to be here - too specific for a common module
-  export type Payload = {
-    id: number;
-  };
+  export type Payload = JwtPayload & JwtPayloadWithId;
   // TODO: what about simply token: string for e.g. validateAuthToken?
   export type Draft = { token: string };
   export class ErrorCreating extends taggedError("ErrorCreatingToken") {}
