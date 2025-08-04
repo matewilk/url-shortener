@@ -12,9 +12,9 @@ interface MenuItem {
 }
 
 export const Header = async ({ capabilities }: HeaderProps) => {
-  const userResult = await capabilities.getUserData();
+  const userType = await capabilities.getUserData();
 
-  const user = userResult.kind === "success" ? userResult.value.user : null;
+  const user = userType.kind === "known" ? userType : null;
 
   const title = "Shortify";
   const menu: Array<MenuItem> = [

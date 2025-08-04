@@ -2,12 +2,10 @@ import { cookies } from "next/headers";
 import { decode, JwtPayload } from "jsonwebtoken";
 
 import { Client } from "@shortify/api-client/client";
-import { RemoteResult, ok } from "@/prelude/RemoteResult";
+import { User } from "../User";
 
 export interface GetUserDataAction {
-  (): Promise<
-    RemoteResult<{ user: { email: string; name: string } }, { message: string }>
-  >;
+  (): Promise<User>;
 }
 
 export const getUserData =
@@ -19,8 +17,7 @@ export const getUserData =
 
       if (!token) {
         return {
-          kind: "error",
-          error: { message: "No token found." },
+          kind: "guest",
         };
       }
 
@@ -35,8 +32,7 @@ export const getUserData =
 
       if (error) {
         return {
-          kind: "error",
-          error: { message: "Internal server error." },
+          kind: "guest",
         };
       }
 
@@ -44,11 +40,10 @@ export const getUserData =
         user: { email, name },
       } = data;
 
-      return ok({ user: { email, name } });
+      return { email, name, kind: "known" };
     } catch (error) {
       return {
-        kind: "error",
-        error: { message: "Internal server error." },
+        kind: "guest",
       };
     }
   };
