@@ -10,9 +10,7 @@ export namespace AuthServiceSpec {
         await fc.assert(
           fc.asyncProperty(
             fc.record({
-              name: fc
-                .string({ minLength: 1, maxLength: 25 })
-                .filter((s) => !s.includes(" ")),
+              id: fc.integer({ min: 1, max: 25 }).filter((s) => s > 0),
             }),
             async (payload) => {
               const tokenResponse = await auth.generateAuthToken(payload);

@@ -1,14 +1,15 @@
 import { test, describe, expect, vi } from "vitest";
 import { Request, Response } from "express";
 
-import { shorten } from "./shorten";
+import { UrlController } from "../../../src/urls/controller/UrlController";
 
 const mockedUrlService = {
   shorten: vi.fn(),
   expand: async () => ({ kind: "success" as const, value: "_" }),
 };
+const routes = new UrlController(mockedUrlService);
 
-describe("shortenUrlRoute", () => {
+describe("shorten Url Route", () => {
   test("returns a shortened url", async () => {
     mockedUrlService.shorten.mockResolvedValue({
       hash: "shortUrl",
@@ -18,9 +19,7 @@ describe("shortenUrlRoute", () => {
     };
     const res: Partial<Response> = { json: vi.fn() };
 
-    await shorten(req as Request, res as Response, {
-      urlService: mockedUrlService,
-    });
+    await routes.shorten(req as Request, res as Response);
 
     expect(res.json).toHaveBeenCalledWith({ shortUrl: "shortUrl" });
   });
@@ -32,9 +31,7 @@ describe("shortenUrlRoute", () => {
       json: vi.fn(),
     };
 
-    await shorten(req as Request, res as Response, {
-      urlService: mockedUrlService,
-    });
+    await routes.shorten(req as Request, res as Response);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(
@@ -51,9 +48,7 @@ describe("shortenUrlRoute", () => {
       json: vi.fn(),
     };
 
-    await shorten(req as Request, res as Response, {
-      urlService: mockedUrlService,
-    });
+    await routes.shorten(req as Request, res as Response);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(

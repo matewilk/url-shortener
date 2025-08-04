@@ -1,13 +1,9 @@
 import bcrypt from "bcrypt";
-import jwt, {
-  JwtPayload,
-  JsonWebTokenError,
-  TokenExpiredError,
-} from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import type ms from "ms";
 
 import { Result, ok, err } from "@/prelude/Result";
-import { AuthService, Token, Auth } from "./AuthService";
+import { AuthService, Token, Auth, JwtPayloadSchema } from "./AuthService";
 
 export class JwtAuthService implements AuthService {
   async hashPassword(password: string): Promise<string> {
@@ -48,13 +44,18 @@ export class JwtAuthService implements AuthService {
 
   async parseAuthToken(
     token: string
-  ): Promise<Result<JwtPayload, Token.Invalid | Token.Expired>> {
+  ): Promise<Result<Token.Payload, Token.Invalid | Token.Expired>> {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string, {
         complete: true,
       });
 
-      return ok(decoded);
+      const parsed = JwtPayloadSchema.safeParse(decoded.payload);
+      if (!parsed.success) {
+        return err(new Token.Invalid());
+      }
+
+      return ok(parsed.data);
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         return err(new Token.Expired());
