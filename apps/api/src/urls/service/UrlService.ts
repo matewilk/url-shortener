@@ -2,12 +2,12 @@ import { Result, ok, err } from "@/prelude/Result";
 import { Hash } from "./Hash";
 import { ShortenedUrl, UrlRepository } from "../repository/UrlRepository";
 
-export interface UrlServiceType {
+export interface UrlService {
   shorten: (url: string) => Promise<ShortenedUrl>;
   expand: (hash: string) => Promise<Result<string, Error>>;
 }
 
-export class UrlService implements UrlServiceType {
+export class DefaultUrlService implements UrlService {
   constructor(private repo: UrlRepository, private hash: Hash) {}
 
   async shorten(url: string): Promise<ShortenedUrl> {

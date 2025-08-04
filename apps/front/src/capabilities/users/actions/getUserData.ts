@@ -26,7 +26,7 @@ export const getUserData =
       const { data, error } = await apiClient.GET("/users/id/{id}", {
         params: { path: { id } },
         headers: {
-          Cookie: `${process.env.JWT_TOKEN_NAME}=${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 

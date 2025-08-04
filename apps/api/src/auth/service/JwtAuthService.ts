@@ -1,9 +1,5 @@
 import bcrypt from "bcrypt";
-import jwt, {
-  JwtPayload,
-  JsonWebTokenError,
-  TokenExpiredError,
-} from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import type ms from "ms";
 
 import { Result, ok, err } from "@/prelude/Result";
