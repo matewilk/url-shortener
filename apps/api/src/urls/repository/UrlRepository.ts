@@ -19,5 +19,5 @@ export type ShortenedUrl = {
 
 export namespace ShortenedUrl {
   export type Draft = Omit<ShortenedUrl, "createdAt">;
-  export class NotFound extends taggedError("UrlNotFound") {}
+  export class NotFound extends taggedError("NotFound") {}
 }

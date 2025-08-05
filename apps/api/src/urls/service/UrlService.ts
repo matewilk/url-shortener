@@ -4,7 +4,7 @@ import { ShortenedUrl, UrlRepository } from "../repository/UrlRepository";
 
 export interface UrlService {
   shorten: (url: string) => Promise<ShortenedUrl>;
-  expand: (hash: string) => Promise<Result<string, Error>>;
+  expand: (hash: string) => Promise<Result<string, ShortenedUrl.NotFound>>;
 }
 
 export class DefaultUrlService implements UrlService {
@@ -25,7 +25,7 @@ export class DefaultUrlService implements UrlService {
     return shortenedUrl;
   }
 
-  async expand(hash: string): Promise<Result<string, Error>> {
+  async expand(hash: string): Promise<Result<string, ShortenedUrl.NotFound>> {
     const id = this.hash.decode(hash);
     const response = await this.repo.findById(id);
 
