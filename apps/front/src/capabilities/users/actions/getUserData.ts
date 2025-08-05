@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { decode, JwtPayload } from "jsonwebtoken";
 
 import { Client } from "@shortify/api-client/client";
@@ -9,12 +8,9 @@ export interface GetUserDataAction {
 }
 
 export const getUserData =
-  (apiClient: Client): GetUserDataAction =>
+  (apiClient: Client, token?: string): GetUserDataAction =>
   async () => {
     try {
-      const cookieStore = await cookies();
-      const token = cookieStore.get(process.env.JWT_TOKEN_NAME || "")?.value;
-
       if (!token) {
         return {
           kind: "guest",

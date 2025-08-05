@@ -29,8 +29,11 @@ export const withCapabilities =
   }) => {
     const capabilities = {
       apiClient,
-      getUserData: getUserData(apiClient),
-      logoutUser: logoutUserAction,
+      user: {
+        getUser: getUserData(apiClient),
+        logout: logoutUserAction,
+        token: undefined, // Token can be set later if needed
+      },
     };
 
     const req = {

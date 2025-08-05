@@ -16,6 +16,25 @@ export class AuthMiddleware {
     private userService: UserService
   ) {}
 
+  maybeAuthenticate = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (token) {
+        const result = await this.authService.parseAuthToken(token);
+        if (result.kind === "success") {
+          req.user = result.value;
+        }
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+
   // user arrow functions to keep `this` context
   authenticate = async (req: Request, res: Response, next: NextFunction) => {
     try {

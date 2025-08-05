@@ -14,7 +14,8 @@ export class RdbmsUrlRepository implements UrlRepository {
       },
     });
 
-    return record;
+    const { userId, ...rest } = record;
+    return rest;
   };
 
   findById = async (
@@ -29,7 +30,8 @@ export class RdbmsUrlRepository implements UrlRepository {
 
       if (!record) return err(new ShortenedUrl.NotFound());
 
-      return ok(record);
+      const { userId, ...rest } = record;
+      return ok(rest);
     } catch (error) {
       throw error;
     }

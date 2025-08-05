@@ -1,19 +1,20 @@
 "use server";
+
 import { z } from "zod";
 
-import { client } from "@shortify/api-client/client";
 import { RemoteResult } from "@/prelude/RemoteResult";
-const apiClient = client("http://localhost:3001");
+import { Capabilities } from "@/capabilities/Capabilities";
 
 interface SubmitUrlAction {
-  (prevState: unknown, formData: FormData): Promise<
+  (prevState: unknown, formData: FormData, capabilities: Capabilities): Promise<
     RemoteResult<{ message: string }, { message: string }>
   >;
 }
 
 export const submitUrl: SubmitUrlAction = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
+  capabilities: Capabilities
 ) => {
   const schema = z.object({
     url: z.string().url(),
@@ -25,9 +26,12 @@ export const submitUrl: SubmitUrlAction = async (
     });
 
     // TODO: this apiClinet returns wrong types
-    const { data, error } = await apiClient.POST("/shorten", {
+    const { data, error } = await capabilities.apiClient.POST("/shorten", {
       body: {
         url,
+      },
+      headers: {
+        Authorization: `Bearer ${capabilities.user.token}`,
       },
     });
 

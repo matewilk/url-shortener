@@ -5,9 +5,13 @@ import { BaseController } from "@/BaseController";
 import { shortUrlSchema, urlSchema } from "@/urls/Url";
 import { UrlService } from "@/urls/service/UrlService";
 import { match, matchErrorTag } from "@/prelude/Result";
+import { AuthMiddleware } from "@/auth/middleware/AuthMiddleware";
 
 export class UrlController extends BaseController {
-  constructor(private urlService: UrlService) {
+  constructor(
+    private urlService: UrlService,
+    private authMiddleware: AuthMiddleware
+  ) {
     super();
   }
 
@@ -17,7 +21,7 @@ export class UrlController extends BaseController {
 
       const { url } = body;
 
-      const shortUrl = await this.urlService.shorten(url);
+      const shortUrl = await this.urlService.shorten(url, req.user?.id);
 
       return res.json({ shortUrl: shortUrl.hash });
     } catch (error) {
@@ -61,7 +65,11 @@ export class UrlController extends BaseController {
   getRouter(): Router {
     const router = Router();
 
-    router.post("/shorten", this.shorten);
+    router.post(
+      "/shorten",
+      this.authMiddleware.maybeAuthenticate,
+      this.shorten
+    );
     router.get("/:shortUrl", this.expand);
 
     return router;

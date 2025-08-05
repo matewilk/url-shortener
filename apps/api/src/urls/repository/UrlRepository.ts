@@ -15,6 +15,7 @@ export type ShortenedUrl = {
   url: string;
   hash: string;
   createdAt: Date;
+  userId?: number;
 };
 
 export namespace ShortenedUrl {
