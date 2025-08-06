@@ -43,7 +43,7 @@ describe("Submit Url Form", () => {
 
     const urlElement = screen.getByTestId("shortened-url");
 
-    expect(urlElement.textContent).toBe("localhost:3000/expand/encodedurl");
+    expect(urlElement.textContent).toBe("http://localhost:3000/encodedurl");
 
     // TODO: Fix this
     // expect(input.value).toBe("");
