@@ -61,10 +61,8 @@ export const SubmitUrlForm = () => {
             </SpinnerButton>
           </div>
           {state.kind === "success" && (
-            // TODO: get host from env?
             <UrlBox
-              host={window.location.host}
-              path={"expand"}
+              host={process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}
               shortUrl={state.value.message}
             />
           )}

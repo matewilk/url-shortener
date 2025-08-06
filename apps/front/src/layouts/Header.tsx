@@ -12,7 +12,7 @@ interface MenuItem {
 }
 
 export const Header = async ({ capabilities }: HeaderProps) => {
-  const userType = await capabilities.getUserData();
+  const userType = await capabilities.user.getUser();
 
   const user = userType.kind === "known" ? userType : null;
 

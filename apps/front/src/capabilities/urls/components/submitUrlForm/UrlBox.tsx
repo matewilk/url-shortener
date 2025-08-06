@@ -3,12 +3,11 @@ import { OpenUrlBtn } from "@/capabilities/urls/components/submitUrlForm/OpenUrl
 
 type UrlBoxProps = {
   host: string;
-  path: string;
   shortUrl: string;
 };
 
-export const UrlBox = ({ host, path, shortUrl }: UrlBoxProps) => {
-  const url = `${host}/${path}/${shortUrl}`;
+export const UrlBox = ({ host, shortUrl }: UrlBoxProps) => {
+  const url = `${host}/${shortUrl}`;
   return (
     <div className="flex items-center bg-green-200 rounded-xl px-4 py-2 w-full max-w-screen-md">
       <div className="flex flex-col w-full">

@@ -4,9 +4,14 @@ import { ZodError } from "zod";
 import { BaseController } from "@/BaseController";
 import { shortUrlSchema, urlSchema } from "@/urls/Url";
 import { UrlService } from "@/urls/service/UrlService";
+import { match, matchErrorTag } from "@/prelude/Result";
+import { AuthMiddleware } from "@/auth/middleware/AuthMiddleware";
 
 export class UrlController extends BaseController {
-  constructor(private urlService: UrlService) {
+  constructor(
+    private urlService: UrlService,
+    private authMiddleware: AuthMiddleware
+  ) {
     super();
   }
 
@@ -16,7 +21,7 @@ export class UrlController extends BaseController {
 
       const { url } = body;
 
-      const shortUrl = await this.urlService.shorten(url);
+      const shortUrl = await this.urlService.shorten(url, req.user?.id);
 
       return res.json({ shortUrl: shortUrl.hash });
     } catch (error) {
@@ -38,11 +43,14 @@ export class UrlController extends BaseController {
 
       const response = await this.urlService.expand(shortUrl);
 
-      if (response.kind === "error") {
-        throw response.error;
-      }
-
-      return res.json({ url: response.value });
+      return match(response, {
+        onOk: (url) => res.json({ url }),
+        onErr: (error) =>
+          matchErrorTag(error, {
+            NotFound: (error) =>
+              res.status(404).json({ error: "Url not found" }),
+          }),
+      });
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({
@@ -57,7 +65,11 @@ export class UrlController extends BaseController {
   getRouter(): Router {
     const router = Router();
 
-    router.post("/shorten", this.shorten);
+    router.post(
+      "/shorten",
+      this.authMiddleware.maybeAuthenticate,
+      this.shorten
+    );
     router.get("/:shortUrl", this.expand);
 
     return router;

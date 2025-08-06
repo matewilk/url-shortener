@@ -17,7 +17,10 @@ export const main = async (capabilities: Capabilities) => {
     capabilities.userService,
     authMiddleware
   );
-  const urlController = new UrlController(capabilities.urlService);
+  const urlController = new UrlController(
+    capabilities.urlService,
+    authMiddleware
+  );
 
   app.use(userController.getRouter());
   app.use(urlController.getRouter());
