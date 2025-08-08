@@ -1,5 +1,5 @@
 import { Capabilities } from "@/capabilities/Capabilities";
-import { UserProfileDropdown } from "@/capabilities/users/components/UserProfile";
+import { UserProfileDropdown } from "@/capabilities/users/components/userProfile/ProfileDropdown";
 import { LinkIcon } from "lucide-react";
 
 interface HeaderProps {

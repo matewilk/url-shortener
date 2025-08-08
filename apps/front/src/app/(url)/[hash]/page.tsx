@@ -25,8 +25,10 @@ export default withCapabilities(async ({ params, capabilities }: PageProps) => {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="text-4xl">{error && !data && <UrlNotFoundCard />}</div>
+    <div className="flex items-center justify-center w-full flex-1">
+      <div className="w-full max-w-5xl m-8">
+        {error && !data && <UrlNotFoundCard />}
+      </div>
     </div>
   );
 });
