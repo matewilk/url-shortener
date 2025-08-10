@@ -37,9 +37,9 @@ function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="font-[family-name:var(--font-geist-sans)] bg-blue-200">
-          <div className="flex flex-col min-h-screen pb-10 items-center justify-between w-full mx-auto">
+          <div className="flex flex-col min-h-screen pb-10 w-full mx-auto">
             <Header capabilities={capabilities} />
-            <main className="flex-grow flex items-center justify-center p-6">
+            <main className="flex-1 w-full max-w-7xl mx-auto flex">
               {children}
             </main>
             <Footer />
