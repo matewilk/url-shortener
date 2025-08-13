@@ -37,6 +37,22 @@ export class RdbmsUrlRepository implements UrlRepository {
     }
   };
 
+  findByUserId: (userId: number) => Promise<Array<ShortenedUrl>> = async (
+    userId
+  ) => {
+    try {
+      const records = await this.db.url.findMany({
+        where: {
+          userId,
+        },
+      });
+
+      return records.map(({ userId, ...rest }) => rest);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   getNextId = async (): Promise<number> => {
     try {
       const [{ nextval: nextId } = { nextval: undefined }] = await this.db

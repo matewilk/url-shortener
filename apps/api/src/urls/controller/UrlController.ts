@@ -62,15 +62,33 @@ export class UrlController extends BaseController {
     }
   };
 
+  public getAll = async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const urls = await this.urlService.getAll(userId);
+
+    return res.json({ urls });
+  };
+
   getRouter(): Router {
     const router = Router();
 
     router.post(
-      "/shorten",
+      "/urls/shorten",
       this.authMiddleware.maybeAuthenticate,
       this.shorten
     );
-    router.get("/:shortUrl", this.expand);
+    router.get("/urls/:shortUrl", this.expand);
+    router.get(
+      "/urls",
+      this.authMiddleware.authenticate,
+      this.authMiddleware.authorise,
+      this.getAll
+    );
 
     return router;
   }

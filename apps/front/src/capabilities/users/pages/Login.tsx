@@ -53,63 +53,65 @@ export const Login = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center min-h-screen">
-      <div className="text-4xl">Login</div>
-      <form id="login-form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="flex gap-4 flex-col">
-          <input
-            className={`text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80 ${
-              errors.email ? "border-red-500" : "border-slate-300"
-            } border-2`}
-            type="email"
-            placeholder="Email"
-            aria-label="Email"
-            disabled={isPending}
-            {...register("email")}
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm px-2">
-              {errors.email.message}
-            </span>
-          )}
-          <input
-            className={`text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80 ${
-              errors.password ? "border-red-500" : "border-slate-300"
-            } border-2`}
-            type="password"
-            placeholder="Password"
-            aria-label="Password"
-            disabled={isPending}
-            {...register("password")}
-          />
-          {errors.password && (
-            <span className="text-red-500 text-sm px-2">
-              {errors.password.message}
-            </span>
-          )}
+    <div className="flex w-full items-center justify-center">
+      <div className="flex flex-col items-center gap-8">
+        <div className="text-4xl">Login</div>
+        <form id="login-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="flex gap-4 flex-col">
+            <input
+              className={`text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80 ${
+                errors.email ? "border-red-500" : "border-slate-300"
+              } border-2`}
+              type="email"
+              placeholder="Email"
+              aria-label="Email"
+              disabled={isPending}
+              {...register("email")}
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm px-2">
+                {errors.email.message}
+              </span>
+            )}
+            <input
+              className={`text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80 ${
+                errors.password ? "border-red-500" : "border-slate-300"
+              } border-2`}
+              type="password"
+              placeholder="Password"
+              aria-label="Password"
+              disabled={isPending}
+              {...register("password")}
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm px-2">
+                {errors.password.message}
+              </span>
+            )}
 
-          <button
-            className="text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80"
-            type="submit"
-            form="login-form"
-            disabled={isPending}
-          >
-            Login
-          </button>
+            <button
+              className="text-black bg-slate-100 rounded-full h-10 sm:h-12 px-4 sm:px-5 min-w-80"
+              type="submit"
+              form="login-form"
+              disabled={isPending}
+            >
+              Login
+            </button>
+          </div>
+        </form>
+
+        {state.kind === "error" && (
+          <div className="text-red-500 text-xl w-full flex justify-start px-4">
+            {state.error.message}
+          </div>
+        )}
+
+        <div className="text-sm">
+          {`Don't have an account? `}
+          <a href="/register" className="text-blue-500 hover:underline">
+            Register
+          </a>
         </div>
-      </form>
-
-      {state.kind === "error" && (
-        <div className="text-red-500 text-xl w-full flex justify-start px-4">
-          {state.error.message}
-        </div>
-      )}
-
-      <div className="text-sm">
-        {`Don't have an account? `}
-        <a href="/register" className="text-blue-500 hover:underline">
-          Register
-        </a>
       </div>
     </div>
   );

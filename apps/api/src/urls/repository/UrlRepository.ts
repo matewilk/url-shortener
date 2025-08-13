@@ -7,6 +7,8 @@ export interface UrlRepository {
     id: number
   ) => Promise<Result<ShortenedUrl, ShortenedUrl.NotFound>>;
 
+  findByUserId: (userId: number) => Promise<Array<ShortenedUrl>>;
+
   getNextId: () => Promise<number>;
 }
 

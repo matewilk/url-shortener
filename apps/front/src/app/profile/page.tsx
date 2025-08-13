@@ -6,6 +6,8 @@ import { ProfileDetails } from "@/capabilities/users/components/userProfile/Prof
 import { ProfileStats } from "@/capabilities/users/components/userProfile/ProfileStats";
 import { UserLinks } from "@/capabilities/users/components/userProfile/UserLinks";
 import { Analytics } from "@/capabilities/users/components/userProfile/Analytics";
+import { withCapabilities } from "@/capabilities/withCapabilities";
+import { redirect } from "next/navigation";
 
 const urls: Array<Url> = [
   {
@@ -34,43 +36,53 @@ const urls: Array<Url> = [
   },
 ];
 
-const ProfilePage = () => {
-  const totalClicks = urls.reduce((sum, url) => sum + url.clicks, 0);
-  return (
-    <div className="w-full max-w-5xl mx-auto mt-12">
-      <div className="m-8">
-        <Card className="max-w-4xl mx-auto mb-8 shadow-lg">
-          <CardContent className="pt-6">
-            <ProfileDetails />
-            <ProfileStats urls={urls} totalClicks={totalClicks} />
-          </CardContent>
-        </Card>
+export default withCapabilities(
+  async ({
+    capabilities: {
+      user: { getUser },
+    },
+  }) => {
+    const user = await getUser();
+    if (user.kind === "guest") {
+      redirect("/login");
+    }
 
-        <Card className="max-w-4xl mx-auto shadow-lg">
-          <Tabs defaultValue="links" className="w-full">
-            <CardHeader>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="links">My Links</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              </TabsList>
-            </CardHeader>
+    const { name, email } = user;
+    const totalClicks = urls.reduce((sum, url) => sum + url.clicks, 0);
+    return (
+      <div className="w-full max-w-5xl mx-auto mt-12">
+        <div className="m-8">
+          <Card className="max-w-4xl mx-auto mb-8 shadow-lg">
+            <CardContent className="pt-6">
+              <ProfileDetails name={name} email={email} />
+              <ProfileStats urls={urls} totalClicks={totalClicks} />
+            </CardContent>
+          </Card>
 
-            <TabsContent value="links">
-              <CardContent>
-                <UserLinks urls={urls} />
-              </CardContent>
-            </TabsContent>
+          <Card className="max-w-4xl mx-auto shadow-lg">
+            <Tabs defaultValue="links" className="w-full">
+              <CardHeader>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="links">My Links</TabsTrigger>
+                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                </TabsList>
+              </CardHeader>
 
-            <TabsContent value="analytics">
-              <CardContent>
-                <Analytics />
-              </CardContent>
-            </TabsContent>
-          </Tabs>
-        </Card>
+              <TabsContent value="links">
+                <CardContent>
+                  <UserLinks urls={urls} />
+                </CardContent>
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <CardContent>
+                  <Analytics />
+                </CardContent>
+              </TabsContent>
+            </Tabs>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
-};
-
-export default ProfilePage;
+    );
+  }
+);
