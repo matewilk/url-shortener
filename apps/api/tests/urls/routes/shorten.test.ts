@@ -7,7 +7,7 @@ const mockedUrlService = {
   shorten: vi.fn(),
   expand: async () => ({ kind: "success" as const, value: "_" }),
 };
-const routes = new UrlController(mockedUrlService);
+const routes = new UrlController(mockedUrlService, {});
 
 describe("shorten Url Route", () => {
   test("returns a shortened url", async () => {

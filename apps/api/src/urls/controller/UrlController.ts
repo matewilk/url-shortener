@@ -69,7 +69,7 @@ export class UrlController extends BaseController {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const urls = await this.urlService.getAll(userId);
+    const urls = await this.urlService.listUrls(userId);
 
     return res.json({ urls });
   };

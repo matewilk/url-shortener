@@ -37,7 +37,7 @@ export class RdbmsUrlRepository implements UrlRepository {
     }
   };
 
-  findByUserId: (userId: number) => Promise<Array<ShortenedUrl>> = async (
+  listByUserId: (userId: number) => Promise<Array<ShortenedUrl>> = async (
     userId
   ) => {
     try {
