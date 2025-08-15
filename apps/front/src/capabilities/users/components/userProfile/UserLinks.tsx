@@ -16,7 +16,7 @@ export const UserLinks = ({ urls }: Props) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">
                   <h3 className="font-semibold text-lg text-blue-600">
-                    {url.shortUrl}
+                    {`${process.env.NEXT_PUBLIC_URL}/${url.hash}`}
                   </h3>
                   <a>
                     <Copy className="h-4 w-4" />
@@ -25,9 +25,7 @@ export const UserLinks = ({ urls }: Props) => {
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </div>
-                <p className="text-gray-600 text-sm truncate mb-2">
-                  {url.originalUrl}
-                </p>
+                <p className="text-gray-600 text-sm truncate mb-2">{url.url}</p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <div className="flex items-center space-x-1">
                     <BarChart3 className="h-4 w-4" />
@@ -35,7 +33,9 @@ export const UserLinks = ({ urls }: Props) => {
                   </div>
                   <div className="flex items-center space-x-1">
                     <Calendar className="h-4 w-4" />
-                    <span>Created {url.createdAt}</span>
+                    <span>
+                      Created {new Date(url.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>

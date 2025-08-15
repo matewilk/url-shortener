@@ -1,40 +1,34 @@
-import { PrismaClient } from "@prisma/client";
+import express, { Request, Response, NextFunction } from "express";
 
-import { main } from "@/main";
-import { DefaultUserService } from "@/users/service/DefaultUserService";
-import { DbUserRepository } from "@/users/repository/DbUserRepository";
-import { JwtAuthService } from "@/auth/service/JwtAuthService";
-import { Base62 } from "@/urls/service/Hash";
-import { DefaultUrlService } from "@/urls/service/UrlService";
-import { RdbmsUrlRepository } from "@/urls/repository/RdbmsUrlRepository";
+import { Capabilities } from "@/Capabilities";
+import { AuthMiddleware } from "@/auth/middleware/AuthMiddleware";
+import { UserController } from "@/users/controller/UserController";
+import { UrlController } from "@/urls/controller/UrlController";
 
-const PORT = process.env.PORT || 3001;
+export const server = async (capabilities: Capabilities) => {
+  const app = express();
+  app.use(express.json());
 
-const server = async () => {
-  const prisma = new PrismaClient();
+  const authMiddleware = new AuthMiddleware(
+    capabilities.authService,
+    capabilities.userService
+  );
+  const userController = new UserController(
+    capabilities.userService,
+    authMiddleware
+  );
+  const urlController = new UrlController(
+    capabilities.urlService,
+    authMiddleware
+  );
 
-  const userRepository = new DbUserRepository(prisma);
-  const authService = new JwtAuthService();
-  const userService = new DefaultUserService(userRepository, authService);
+  // TODO: you can add error handling middleware here
+  app.use(userController.getRouter());
+  app.use(urlController.getRouter());
 
-  const hash = new Base62();
-  const urlRepository = new RdbmsUrlRepository(prisma);
-  const urlService = new DefaultUrlService(urlRepository, hash);
-
-  const capabilities = {
-    userService,
-    authService,
-    urlService,
-  };
-
-  const app = await main(capabilities);
-
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    res.status(500).json({ error: err.message || "Internal server error" });
   });
-};
 
-server().catch((error) => {
-  console.error("Error starting the server:", error);
-  process.exit(1);
-});
+  return app;
+};

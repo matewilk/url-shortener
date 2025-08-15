@@ -146,6 +146,97 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/urls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all URLs
+         * @description Retrieve all shortened URLs for the authenticated user
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of shortened URLs */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            urls: {
+                                /**
+                                 * @description The ID of the shortened URL
+                                 * @example 12345
+                                 */
+                                id: string;
+                                /**
+                                 * Format: uri
+                                 * @description The original URL
+                                 * @example https://www.example.com
+                                 */
+                                url: string;
+                                /**
+                                 * @description The hash of the shortened URL
+                                 * @example abc123
+                                 */
+                                hash: string;
+                                /**
+                                 * Format: date-time
+                                 * @description The date and time when the URL was created
+                                 * @example 2023-10-01T12:00:00Z
+                                 */
+                                createdAt: string;
+                                /**
+                                 * Format: date-time
+                                 * @description The date and time when the URL will expire
+                                 * @example 2023-12-01T12:00:00Z
+                                 */
+                                expiredAt: string;
+                                /**
+                                 * Format: date-time
+                                 * @description The date and time when the URL was disabled
+                                 * @example 2023-10-01T12:00:00Z
+                                 */
+                                disabledAt: string;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Error message
+                             * @example Unauthorized access
+                             */
+                            message?: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;

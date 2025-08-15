@@ -6,8 +6,10 @@ import { UrlController } from "../../../src/urls/controller/UrlController";
 const mockedUrlService = {
   shorten: vi.fn(),
   expand: vi.fn(),
+  findAll: vi.fn(),
 };
-const routes = new UrlController(mockedUrlService);
+
+const routes = new UrlController(mockedUrlService, {});
 
 describe("expand Url Route", () => {
   test("returns the original URL for a valid short URL", async () => {

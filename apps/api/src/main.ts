@@ -1,33 +1,40 @@
-import express, { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
 
-import { Capabilities } from "@/Capabilities";
-import { AuthMiddleware } from "@/auth/middleware/AuthMiddleware";
-import { UserController } from "@/users/controller/UserController";
-import { UrlController } from "@/urls/controller/UrlController";
+import { server } from "@/server";
+import { DefaultUserService } from "@/users/service/DefaultUserService";
+import { DbUserRepository } from "@/users/repository/DbUserRepository";
+import { JwtAuthService } from "@/auth/service/JwtAuthService";
+import { Base62 } from "@/urls/service/Hash";
+import { DefaultUrlService } from "@/urls/service/UrlService";
+import { RdbmsUrlRepository } from "@/urls/repository/RdbmsUrlRepository";
 
-export const main = async (capabilities: Capabilities) => {
-  const app = express();
-  app.use(express.json());
+const PORT = process.env.PORT || 3001;
 
-  const authMiddleware = new AuthMiddleware(
-    capabilities.authService,
-    capabilities.userService
-  );
-  const userController = new UserController(
-    capabilities.userService,
-    authMiddleware
-  );
-  const urlController = new UrlController(
-    capabilities.urlService,
-    authMiddleware
-  );
+const main = async () => {
+  const prisma = new PrismaClient();
 
-  app.use(userController.getRouter());
-  app.use(urlController.getRouter());
+  const userRepository = new DbUserRepository(prisma);
+  const authService = new JwtAuthService();
+  const userService = new DefaultUserService(userRepository, authService);
 
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({ error: err.message || "Internal server error" });
+  const hash = new Base62();
+  const urlRepository = new RdbmsUrlRepository(prisma);
+  const urlService = new DefaultUrlService(urlRepository, hash);
+
+  const capabilities = {
+    userService,
+    authService,
+    urlService,
+  };
+
+  const app = await server(capabilities);
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
   });
-
-  return app;
 };
+
+main().catch((error) => {
+  console.error("Error starting the server:", error);
+  process.exit(1);
+});

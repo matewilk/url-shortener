@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { Capabilities } from "./Capabilities";
 
 import { getUserData } from "./users/actions/getUserData";
@@ -27,12 +28,15 @@ export const withCapabilities =
     params: Promise<Params>;
     searchParams: Promise<SearchParams>;
   }) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(process.env.JWT_TOKEN_NAME || "")?.value;
+
     const capabilities = {
       apiClient,
       user: {
-        getUser: getUserData(apiClient),
+        getUser: getUserData(apiClient, token),
         logout: logoutUserAction,
-        token: undefined, // Token can be set later if needed
+        token,
       },
     };
 

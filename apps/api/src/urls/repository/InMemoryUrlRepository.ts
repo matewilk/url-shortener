@@ -37,6 +37,18 @@ export class InMemoryUrlRepository implements UrlRepository {
     }
   };
 
+  listByUserId = async (userId: number): Promise<Array<ShortenedUrl>> => {
+    try {
+      const results = Object.values(this.store).filter(
+        (url) => url.userId === userId
+      );
+
+      return results;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   getNextId = async (): Promise<number> => {
     try {
       const nextId = Object.keys(this.store).length + 1;

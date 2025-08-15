@@ -1,8 +1,9 @@
 export type Url = {
-  id: number;
-  originalUrl: string;
-  shortUrl: string;
-  clicks: number;
+  id: string;
+  url: string;
+  hash: string;
   createdAt: string;
-  status: string;
+  expiredAt: string | null;
+  disabledAt: string | null;
+  clicks: number;
 };
