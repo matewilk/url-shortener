@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
-import { Capabilities } from "./Capabilities";
 
-import { getUserData } from "./users/actions/getUserData";
-import { logoutUserAction } from "./users/actions/logoutUserAction";
+import { Capabilities } from "./Capabilities";
+import { ApiUsers } from "./users/Users";
+import { ApiUrls } from "./urls/Urls";
 
 import { client } from "@shortify/api-client/client";
+
 const apiClient = client(
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 );
@@ -32,12 +33,8 @@ export const withCapabilities =
     const token = cookieStore.get(process.env.JWT_TOKEN_NAME || "")?.value;
 
     const capabilities = {
-      apiClient,
-      user: {
-        getUser: getUserData(apiClient, token),
-        logout: logoutUserAction,
-        token,
-      },
+      users: new ApiUsers(apiClient, token),
+      urls: new ApiUrls(apiClient, token),
     };
 
     const req = {

@@ -35,7 +35,7 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (state.kind === "success") {
+    if (state === undefined) {
       reset();
       router.push("/");
     }
@@ -100,7 +100,7 @@ export const Login = () => {
           </div>
         </form>
 
-        {state.kind === "error" && (
+        {state !== undefined && state.kind === "error" && (
           <div className="text-red-500 text-xl w-full flex justify-start px-4">
             {state.error.message}
           </div>

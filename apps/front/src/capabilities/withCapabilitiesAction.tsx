@@ -2,8 +2,8 @@ import { cookies } from "next/headers";
 
 import { client } from "@shortify/api-client/client";
 import { Capabilities } from "./Capabilities";
-import { logoutUserAction } from "./users/actions/logoutUserAction";
-import { getUserData } from "./users/actions/getUserData";
+import { ApiUsers } from "./users/Users";
+import { ApiUrls } from "./urls/Urls";
 
 interface WithCapabilitiesAction<State, Payload> {
   (state: Awaited<State>, payload: Payload, capabilities: Capabilities):
@@ -23,14 +23,8 @@ export const withCapabilitiesAction = <State, Payload>(
     const token = cookieStore.get(process.env.JWT_TOKEN_NAME || "")?.value;
 
     const capabilities = {
-      apiClient,
-      user: {
-        getUser: getUserData(apiClient, token),
-        logout: logoutUserAction,
-        token,
-      },
-      getUserData: getUserData(apiClient, token),
-      logoutUser: logoutUserAction,
+      users: new ApiUsers(apiClient, token),
+      urls: new ApiUrls(apiClient, token),
     };
 
     return action(state, payload, capabilities);
