@@ -4,12 +4,23 @@ import { Client } from "@shortify/api-client/client";
 
 export interface Users {
   token: string | undefined;
+  register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<string>;
   getUser: () => Promise<{ name: string; email: string } | null>;
 }
 
 export class ApiUsers implements Users {
   constructor(private apiClient: Client, public token: string | undefined) {}
+
+  async register(name: string, email: string, password: string): Promise<void> {
+    const { data, error } = await this.apiClient.POST("/users", {
+      body: { name, email, password },
+    });
+
+    if (error || !data) {
+      throw new Error("Registration failed, please try again.");
+    }
+  }
 
   async login(email: string, password: string): Promise<string> {
     const { data, error } = await this.apiClient.POST("/login", {
