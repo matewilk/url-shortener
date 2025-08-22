@@ -5,5 +5,4 @@ export type Url = {
   createdAt: string;
   expiredAt: string | null;
   disabledAt: string | null;
-  clicks: number;
 };

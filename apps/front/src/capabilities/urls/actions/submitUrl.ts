@@ -25,17 +25,9 @@ export const submitUrl: SubmitUrlAction = async (
       url: formData.get("url"),
     });
 
-    // TODO: this apiClinet returns wrong types
-    const { data, error } = await capabilities.apiClient.POST("/shorten", {
-      body: {
-        url,
-      },
-      headers: {
-        Authorization: `Bearer ${capabilities.user.token}`,
-      },
-    });
+    const shortUrl = await capabilities.urls.shorten(url);
 
-    if (error) {
+    if (!shortUrl) {
       return {
         kind: "error",
         error: { message: "Internal server error." },
@@ -44,7 +36,7 @@ export const submitUrl: SubmitUrlAction = async (
 
     return {
       kind: "success",
-      value: { message: `${data?.shortUrl}` },
+      value: { message: `${shortUrl}` },
     };
   } catch (error) {
     return {

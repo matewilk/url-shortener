@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Copy, ExternalLink, BarChart3, Calendar, Trash2 } from "lucide-react";
 
 type Props = {
-  urls: Array<Url>;
+  urls: Array<Url & { clicks: number }>;
 };
 
 export const UserLinks = ({ urls }: Props) => {

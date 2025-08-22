@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/shorten": {
+    "/urls/shorten": {
         parameters: {
             query?: never;
             header?: never;
@@ -64,7 +64,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/{shortUrl}": {
+    "/urls/{shortUrl}": {
         parameters: {
             query?: never;
             header?: never;

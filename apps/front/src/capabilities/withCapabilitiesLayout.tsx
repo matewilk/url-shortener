@@ -2,8 +2,8 @@ import { cookies } from "next/headers";
 import { client } from "@shortify/api-client/client";
 
 import { Capabilities } from "./Capabilities";
-import { getUserData } from "./users/actions/getUserData";
-import { logoutUserAction } from "./users/actions/logoutUserAction";
+import { ApiUsers } from "./users/Users";
+import { ApiUrls } from "./urls/Urls";
 
 interface WithCapabilitiesLayout {
   (props: {
@@ -24,12 +24,8 @@ export const withCapabilitiesLayout = (
     const token = cookieStore.get(process.env.JWT_TOKEN_NAME || "")?.value;
 
     const capabilities = {
-      apiClient,
-      user: {
-        getUser: getUserData(apiClient, token),
-        logout: logoutUserAction,
-        token,
-      },
+      users: new ApiUsers(apiClient, token),
+      urls: new ApiUrls(apiClient, token),
     };
 
     return layout({ children, capabilities });
